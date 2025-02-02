@@ -1,7 +1,9 @@
 dir_guard=@mkdir -p build
+BINS=build/yhos.img build/kernel_entry.o build/kernel.o build/void.bin build/boot.bin
+
 all: build/yhos.img build/kernel_entry.o build/kernel.o build/void.bin build/boot.bin
 
-build/yhos.img: build/boot.bin build/kernel_entry.o build/kernel.o build/void.bin
+build/yhos.img: $(BINS)
 	$(dir_guard)
 	i386-elf-ld -o build/kernel.bin -Ttext 0x1000 build/kernel_entry.o build/kernel.o --oformat binary
 	cat build/boot.bin build/kernel.bin build/void.bin > build/yhos.bin
