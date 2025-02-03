@@ -15,3 +15,8 @@ typedef struct {
   dword ecx;
   dword eax;
 } regs;
+
+typedef struct {
+  char x;
+  char y;
+} vgavec2;

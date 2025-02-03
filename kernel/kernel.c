@@ -2,6 +2,6 @@
 #include <kernel/types.h>
 
 dword main() {
-  // Test syscall: print 'A'
-  asm volatile("int $0x80" : : "a"(0), "b"('A'));
+  char str[] = "Hello, World!\n";
+  asm volatile("int $0x80" : : "a"(1), "b"(str));
 }
