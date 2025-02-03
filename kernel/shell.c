@@ -40,7 +40,9 @@ void shell() {
     } else if (strcmp(cmd, "HELP") == 0) {
       do_syscall(SYS_WRITE, (dword)help_msg, 0);
     } else if (strcmp(cmd, "VER") == 0) {
-      do_syscall(SYS_WRITE, (dword)YHOS_VER_FULL "\n\0", 0);
+      do_syscall(SYS_WRITE,
+                 (dword)YHOS_VER_FULL " (https://github.com/aceinetx/yhos)\n\0",
+                 0);
     } else if (strcmp(cmd, "TEST") == 0) {
       kernel_test();
     } else {
