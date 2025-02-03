@@ -27,7 +27,7 @@ build/lowlevel.o: kernel/lowlevel.c kernel/lowlevel.h kernel/types.h
 	$(dir_guard)
 	i386-elf-gcc -m32 -ffreestanding -g -c kernel/lowlevel.c -o build/lowlevel.o $(CFLAGS)
 
-build/shell.o: kernel/shell.c kernel/shell.h kernel/syscall.h kernel/std.h kernel/std.c kernel/version.h
+build/shell.o: kernel/shell.c kernel/shell.h kernel/syscall.h kernel/std.h kernel/std.c kernel/version.h kernel/lowlevel.h
 	$(dir_guard)
 	i386-elf-gcc -m32 -ffreestanding -g -c kernel/shell.c -o build/shell.o $(CFLAGS)
 

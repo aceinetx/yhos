@@ -1,6 +1,4 @@
 #include <kernel/lowlevel.h>
-#define VGA_BUFFER ((word *)0xB8000)
-#define VGA_WIDTH 80
 
 void outb(word port, byte value) {
   asm volatile("outb %0, %1" : : "a"(value), "Nd"(port));

@@ -1,5 +1,7 @@
 #pragma once
 #include <kernel/types.h>
+#define VGA_BUFFER ((word *)0xB8000)
+#define VGA_WIDTH 80
 
 void outb(word port, byte value);
 byte inb(word port);
