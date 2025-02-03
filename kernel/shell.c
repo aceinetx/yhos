@@ -7,7 +7,10 @@
 char help_msg[] = "Available commands: \n"
                   "EXIT - halt the system\n"
                   "HELP - print this message\n"
-                  "VER - print yhOS version\n";
+                  "VER  - print yhOS version\n"
+                  "TEST - do a test\n";
+
+void kernel_test();
 
 char cmd[255];
 char arrow[255];
@@ -28,6 +31,8 @@ void shell() {
       do_syscall(SYS_WRITE, (dword)help_msg, 0);
     } else if (strcmp(cmd, "VER") == 0) {
       do_syscall(SYS_WRITE, (dword)YHOS_VER_FULL "\n\0", 0);
+    } else if (strcmp(cmd, "TEST") == 0) {
+      kernel_test();
     } else {
       if (cmd[0] != '\0') {
         do_syscall(SYS_WRITE, (dword)("(no match)\n"), 0);
