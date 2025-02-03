@@ -1,6 +1,6 @@
 dir_guard=@mkdir -p build
 BINS=build/yhos.img build/kernel_entry.o build/kernel.o build/void.bin build/boot.bin build/lowlevel.o build/syscall.o
-CFLAGS = -I.
+CFLAGS = -I. -Wall -Wpedantic -Werror
 
 all: $(BINS)
 
