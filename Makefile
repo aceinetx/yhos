@@ -1,6 +1,6 @@
 dir_guard=@mkdir -p build
 BINS=build/yhos.img build/kernel_entry.o build/kernel.o build/void.bin build/boot.bin build/lowlevel.o build/syscall.o
-GIT_COMMIT = $(shell git describe --always --dirty)
+GIT_COMMIT = $(shell git describe --always)
 CFLAGS = -I. -Wall -Wpedantic -Werror -DGIT_COMMIT='"$(GIT_COMMIT)"'
 
 all: $(BINS)
