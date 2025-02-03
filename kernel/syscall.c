@@ -27,17 +27,29 @@ void syscall_handler(regs *r) {
     char *c = (char *)r->ebx;
     for (;;) {
       keyboard_result kc = keyboard_handle_input();
+      byte is_not_full = (dword)c < (dword)(r->ebx + r->ecx);
+      byte is_empty = (dword)c == r->ebx;
+
       if (kc.ch == '\n' && kc.is_valid) {
         vga_putc(kc.ch);
         break;
       }
 
-      if (kc.is_valid && (dword)c < (dword)(r->ebx + r->ecx)) {
+      if (kc.is_valid && is_not_full) {
         *c = kc.ch;
         vga_putc(kc.ch);
         c++;
       } else {
-        if (kc.ch == 0x0E) {
+        if (kc.ch == 0x0E && !is_empty) {
+          vgavec2 pos = get_cursor_pos();
+          pos.x -= 1;
+          set_cursor_pos(pos.x, pos.y);
+
+          vga_putc(' ');
+
+          set_cursor_pos(pos.x, pos.y);
+          c--;
+          *c = 0;
         }
       }
     }
