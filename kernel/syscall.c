@@ -32,6 +32,7 @@ void syscall_handler(regs *r) {
 
       if (kc.ch == '\n' && kc.is_valid) {
         vga_putc(kc.ch);
+        *c = '\0';
         break;
       }
 
