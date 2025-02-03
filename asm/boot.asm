@@ -12,7 +12,8 @@ mov bp, 0x8000
 mov sp, bp
 
 mov bx, KERNEL_LOCATION
-mov dh, 2
+mov dh, 50
+;mov dh, 2
 
 mov ah, 0x02
 mov al, dh 
@@ -81,7 +82,7 @@ start_protected_mode:
 	
 	mov ebp, 0x90000		; 32 bit stack base pointer
 	mov esp, ebp
-	sub esp, 16
+	sub esp, 0x1000
 
   jmp KERNEL_LOCATION
 
