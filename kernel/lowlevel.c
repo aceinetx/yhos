@@ -45,18 +45,20 @@ void vga_putc(char c) {
   vgavec2 pos = get_cursor_pos();
 
   if (c == '\n') {
-    pos.y++;
-    pos.x = 0;
-    goto vga_putc_end;
+    goto vga_putc_newlend;
   }
 
   VGA_BUFFER[pos.y * 80 + pos.x] = (word)c | 0x0F00;
   pos.x++;
   if (pos.x > VGA_WIDTH) {
-    pos.x = 0;
-    pos.y++;
+    goto vga_putc_newlend;
   }
 
+  goto vga_putc_end;
+
+vga_putc_newlend:
+  pos.x = 0;
+  pos.y++;
 vga_putc_end:
   set_cursor_pos(pos.x, pos.y);
 }

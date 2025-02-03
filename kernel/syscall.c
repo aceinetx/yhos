@@ -1,3 +1,4 @@
+#include <kernel/keyboard.h>
 #include <kernel/lowlevel.h>
 #include <kernel/syscall.h>
 
@@ -11,14 +12,34 @@ dword do_syscall(dword eax, dword ebx, dword ecx) {
 
 void syscall_handler(regs *r) {
   dword syscall_num = r->eax;
-  if (syscall_num == 0) {
+  if (syscall_num == SYS_WRITEC) {
     char c = (char)r->ebx;
     vga_putc(c);
-  } else if (syscall_num == 1) {
+  } else if (syscall_num == SYS_WRITE) {
     char *c = (char *)r->ebx;
     while (*c != 0) {
       vga_putc(*c);
       c++;
+    }
+  } else if (syscall_num == SYS_GETS) {
+    // string in ebx
+    // length in ecx
+    char *c = (char *)r->ebx;
+    for (;;) {
+      keyboard_result kc = keyboard_handle_input();
+      if (kc.ch == '\n' && kc.is_valid) {
+        vga_putc(kc.ch);
+        break;
+      }
+
+      if (kc.is_valid && (dword)c < (dword)(r->ebx + r->ecx)) {
+        *c = kc.ch;
+        vga_putc(kc.ch);
+        c++;
+      } else {
+        if (kc.ch == 0x0E) {
+        }
+      }
     }
   }
 }
