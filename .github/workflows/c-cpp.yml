@@ -1,0 +1,20 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: install dependencies
+      run: |
+        sudo apt install nasm i386-elf-gcc i386-elf-binutils
+    - name: make
+      run: make
