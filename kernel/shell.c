@@ -5,10 +5,11 @@
 #include <kernel/version.h>
 
 char help_msg[] = "Available commands: \n"
-                  "EXIT - halt the system\n"
-                  "HELP - print this message\n"
-                  "VER  - print yhOS version\n"
-                  "TEST - do a test\n";
+                  "EXIT   - halt the system\n"
+                  "REBOOT - reboot the system\n"
+                  "HELP   - print this message\n"
+                  "VER    - print yhOS version\n"
+                  "TEST   - do a test\n";
 
 void kernel_test();
 
@@ -27,6 +28,15 @@ void shell() {
     if (strcmp(cmd, "EXIT") == 0) {
       do_syscall(SYS_WRITE, (dword)("halted\n"), 0);
       break;
+    } else if (strcmp(cmd, "REBOOT") == 0) {
+      byte good = 0x02;
+      while (good & 0x02)
+        good = inb(0x64);
+      outb(0x64, 0xFE);
+      asm volatile("hlt\n");
+      /*asm volatile(
+          ".intel_syntax noprefix\nmov ebx, 0\ndiv ebx\n.att_syntax
+         prefix\n");*/
     } else if (strcmp(cmd, "HELP") == 0) {
       do_syscall(SYS_WRITE, (dword)help_msg, 0);
     } else if (strcmp(cmd, "VER") == 0) {
