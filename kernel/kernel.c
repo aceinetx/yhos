@@ -1,6 +1,6 @@
-#include <stdint.h>
+#include "yypes.h"
 
-int main() {
+dword main() {
   for (;;)
     ;
 }
