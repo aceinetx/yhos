@@ -62,7 +62,7 @@ build/kernel.o: kernel/kernel.c kernel/syscall.h kernel/types.h kernel/keyboard.
 build/test.o: kernel/test.asm
 	$(dir_guard)
 	$(NASM_COLOR)
-	nasm kernel/test.asm -f elf -o build/test.o
+	fasm kernel/test.asm build/test.o
 	$(RESET_COLOR)
 
 build/void.bin: asm/void.asm

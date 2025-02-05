@@ -1,5 +1,7 @@
-[bits 32]
-[global kernel_test]
+;; fasm
+format ELF
+use32
+public kernel_test
 kernel_test:
 	pusha
 	push 670006
