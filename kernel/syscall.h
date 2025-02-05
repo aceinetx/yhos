@@ -4,6 +4,8 @@
 #define SYS_WRITEC 0
 #define SYS_WRITE 1
 #define SYS_GETS 2
+#define SYS_DMAP 3
+#define SYS_DUNMAP 4
 
 dword do_syscall(dword eax, dword ebx, dword ecx);
 void syscall_handler(regs *r);

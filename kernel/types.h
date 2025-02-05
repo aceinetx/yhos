@@ -17,6 +17,11 @@ typedef struct {
 } regs;
 
 typedef struct {
+  dword addr;
+  dword len;
+} dmem_entry;
+
+typedef struct {
   char x;
   char y;
 } vgavec2;
