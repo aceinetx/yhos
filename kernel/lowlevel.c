@@ -1,4 +1,5 @@
 #include <kernel/lowlevel.h>
+#include <kernel/std.h>
 
 void outb(word port, byte value) {
   asm volatile("outb %0, %1" : : "a"(value), "Nd"(port));
@@ -8,6 +9,14 @@ byte inb(word port) {
   byte value;
   asm volatile("inb %1, %0" : "=a"(value) : "Nd"(port));
   return value;
+}
+
+void vga_scroll() {
+  dword vga_size = VGA_WIDTH * VGA_HEIGHT * sizeof(word);
+  word buf[vga_size];
+  memset(buf, 0, vga_size);
+  memcpy(buf, VGA_BUFFER + VGA_WIDTH, vga_size - VGA_WIDTH);
+  memcpy(VGA_BUFFER, buf, vga_size);
 }
 
 void set_cursor_pos(word x, word y) {
@@ -57,6 +66,10 @@ void vga_putc(char c) {
 vga_putc_newlend:
   pos.x = 0;
   pos.y++;
+  if (pos.y >= 25) {
+    pos.y--;
+    vga_scroll();
+  }
 vga_putc_end:
   set_cursor_pos(pos.x, pos.y);
 }

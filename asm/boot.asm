@@ -80,7 +80,7 @@ start_protected_mode:
 	mov fs, ax
 	mov gs, ax
 	
-	mov ebp, 0x90000		; 32 bit stack base pointer
+	mov ebp, 0x900000		; 32 bit stack base pointer
 	mov esp, ebp
 	sub esp, 0x1000
 

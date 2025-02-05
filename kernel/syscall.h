@@ -22,5 +22,10 @@
 #define syscall4(eax, ebx, ecx, edx)                                           \
   do_syscall((dword)(eax), (dword)(ebx), (dword)(ecx), (dword)(edx))
 
+#define VFS_SIZE 2105344
+#define VFS_ESIZE ((int)(VFS_SIZE / (VFS_MAX_FILE_NAME + VFS_MAX_FILE_SIZE)))
+
+extern vfs_file vfs[VFS_ESIZE];
+
 dword do_syscall(dword eax, dword ebx, dword ecx, dword edx);
 void syscall_handler(regs *r);

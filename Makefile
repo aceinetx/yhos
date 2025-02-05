@@ -1,7 +1,7 @@
 dir_guard = @mkdir -p build
 BINS = build/yhos.img build/kernel_entry.o build/kernel.o build/void.bin build/boot.bin build/lowlevel.o build/syscall.o build/keyboard.o build/shell.o build/std.o build/test.o
 GIT_COMMIT = $(shell git describe --always)
-CFLAGS = -I. -Wall -Wpedantic -Werror -Wextra -DGIT_COMMIT='"$(GIT_COMMIT)"' -DVFS_SIZE=16000000 -DVFS_MAX_FILE_SIZE=4096 -DVFS_MAX_FILE_NAME=16
+CFLAGS = -I. -Wall -Wpedantic -Werror -Wextra -DGIT_COMMIT='"$(GIT_COMMIT)"' -DVFS_MAX_FILE_SIZE=4096 -DVFS_MAX_FILE_NAME=16
 NASM_COLOR = @echo -e -n "\x1b[38;5;94m"
 GCC_COLOR = @echo -e -n "\x1b[38;5;244m"
 LD_COLOR = @echo -e -n "\x1b[38;5;51m"
@@ -35,7 +35,7 @@ build/syscall.o: kernel/syscall.c kernel/syscall.h kernel/types.h kernel/lowleve
 	i386-elf-gcc -m32 -ffreestanding -g -c $< -o $@ $(CFLAGS)
 	$(RESET_COLOR)
 
-build/lowlevel.o: kernel/lowlevel.c kernel/lowlevel.h kernel/types.h
+build/lowlevel.o: kernel/lowlevel.c kernel/lowlevel.h kernel/types.h kernel/std.h
 	$(dir_guard)
 	$(GCC_COLOR)
 	i386-elf-gcc -m32 -ffreestanding -g -c $< -o $@ $(CFLAGS)

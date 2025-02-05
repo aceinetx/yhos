@@ -2,7 +2,6 @@
 #include <kernel/lowlevel.h>
 #include <kernel/std.h>
 #include <kernel/syscall.h>
-#define VFS_ESIZE (VFS_SIZE / sizeof(vfs_file))
 
 vfs_file vfs[VFS_ESIZE] = {0};
 
@@ -63,7 +62,7 @@ void syscall_handler(regs *r) {
     char *buf = (char *)r->ecx;
     r->eax = 0;
 
-    for (long unsigned int i = 0; i < VFS_ESIZE; i++) {
+    for (int i = 0; i < (int)VFS_ESIZE; i++) {
       vfs_file *file = &vfs[i];
       if (strcmp(file->name, filename) == 0) {
         memcpy(file->content, buf, VFS_MAX_FILE_SIZE);
@@ -74,7 +73,7 @@ void syscall_handler(regs *r) {
 
     // if we didn't find the file, try creating a new one
     if (r->eax == 0) {
-      for (long unsigned int i = 0; i < VFS_ESIZE; i++) {
+      for (int i = 0; i < (int)VFS_ESIZE; i++) {
         vfs_file *file = &vfs[i];
         if (file->name[0] == '\0' &&
             file->content[0] == '\0') { // essentially empty file
@@ -90,11 +89,12 @@ void syscall_handler(regs *r) {
     char *buf = (char *)r->ecx;
     r->eax = 0;
 
-    for (long unsigned int i = 0; i < VFS_ESIZE; i++) {
+    for (int i = 0; i < (int)VFS_ESIZE; i++) {
       vfs_file *file = &vfs[i];
       if (strcmp(file->name, filename) == 0) {
         memcpy(buf, file->content, VFS_MAX_FILE_SIZE);
         r->eax = (dword)file->content;
+        break;
       }
     }
   }
