@@ -21,12 +21,12 @@ void default_arrow() { strncpy(arrow, "> ", 255); }
 void shell() {
   default_arrow();
   for (;;) {
-    do_syscall(SYS_WRITE, (dword)arrow, 0);
+    syscall(SYS_WRITE, arrow);
     vgavec2 initial_pos = get_cursor_pos();
-    do_syscall(SYS_GETS, (dword)cmd, sizeof(cmd));
+    syscall(SYS_GETS, cmd, sizeof(cmd));
     default_arrow();
     if (strcmp(cmd, "EXIT") == 0) {
-      do_syscall(SYS_WRITE, (dword)("halted\n"), 0);
+      syscall(SYS_WRITE, "halted\n");
       break;
     } else if (strcmp(cmd, "REBOOT") == 0) {
       byte good = 0x02;
@@ -38,19 +38,18 @@ void shell() {
           ".intel_syntax noprefix\nmov ebx, 0\ndiv ebx\n.att_syntax
          prefix\n");*/
     } else if (strcmp(cmd, "HELP") == 0) {
-      do_syscall(SYS_WRITE, (dword)help_msg, 0);
+      syscall(SYS_WRITE, help_msg);
     } else if (strcmp(cmd, "VER") == 0) {
-      do_syscall(SYS_WRITE,
-                 (dword)YHOS_VER_FULL " (https://github.com/aceinetx/yhos)\n\0",
-                 0);
+      syscall(SYS_WRITE,
+              YHOS_VER_FULL " (https://github.com/aceinetx/yhos)\n\0");
     } else if (strcmp(cmd, "TEST") == 0) {
       kernel_test();
     } else {
       if (cmd[0] != '\0') {
-        do_syscall(SYS_WRITE, (dword)("(no match)\n"), 0);
+        syscall(SYS_WRITE, "(no match)\n");
         vgavec2 old_pos = get_cursor_pos();
         set_cursor_pos(VGA_WIDTH - 4, initial_pos.y);
-        do_syscall(SYS_WRITE, (dword)("FAIL"), 0);
+        syscall(SYS_WRITE, "FAIL");
         set_cursor_pos(old_pos.x, old_pos.y);
       }
     }

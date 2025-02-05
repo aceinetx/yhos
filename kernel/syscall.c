@@ -1,14 +1,13 @@
 #include <kernel/keyboard.h>
 #include <kernel/lowlevel.h>
+#include <kernel/std.h>
 #include <kernel/syscall.h>
+#define VFS_ESIZE (VFS_SIZE / sizeof(vfs_file))
 
-dmem_entry dmem_addr[DMEM_ADDR_LIMIT] = {0};
-dmem_entry dmem_unmapped_addr[DMEM_ADDR_LIMIT] = {0};
-dword dmem_unmapped_i = -1;
-dword dmem_next_addr = DMEM_BEGIN;
+vfs_file vfs[VFS_ESIZE] = {0};
 
-dword do_syscall(dword eax, dword ebx, dword ecx) {
-  asm volatile("int $0x80" : : "a"(eax), "b"(ebx), "c"(ecx));
+dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
+  asm volatile("int $0x80" : : "a"(eax), "b"(ebx), "c"(ecx), "d"(edx));
   asm volatile("push %eax\n");
   dword ret;
   asm volatile("pop %0\n" : "=a"(ret));
@@ -59,36 +58,43 @@ void syscall_handler(regs *r) {
         }
       }
     }
-  } else if (syscall_num == SYS_DMAP) {
+  } else if (syscall_num == SYS_VFSWRITE) {
+    char *filename = (char *)r->ebx;
+    char *buf = (char *)r->ecx;
     r->eax = 0;
-    dword len = r->ebx;
 
-    for (int i = 0; i < DMEM_ADDR_LIMIT; i++) {
-    }
-
-    for (int i = 0; i < DMEM_ADDR_LIMIT; i++) {
-      dmem_entry *entry = &dmem_addr[i];
-      if (entry->addr == 0) {
-        // found free address
-        dmem_next_addr -= len;
-        entry->addr = dmem_next_addr;
-        entry->len = len;
-        r->eax = entry->addr;
+    for (long unsigned int i = 0; i < VFS_ESIZE; i++) {
+      vfs_file *file = &vfs[i];
+      if (strcmp(file->name, filename) == 0) {
+        memcpy(file->content, buf, VFS_MAX_FILE_SIZE);
+        r->eax = (dword)file->content;
+        break;
       }
     }
-  } else if (syscall_num == SYS_DUNMAP) {
+
+    // if we didn't find the file, try creating a new one
+    if (r->eax == 0) {
+      for (long unsigned int i = 0; i < VFS_ESIZE; i++) {
+        vfs_file *file = &vfs[i];
+        if (file->name[0] == '\0' &&
+            file->content[0] == '\0') { // essentially empty file
+          memcpy(file->content, buf, VFS_MAX_FILE_SIZE);
+          memcpy(file->name, filename, VFS_MAX_FILE_NAME);
+          r->eax = (dword)file->content;
+          break;
+        }
+      }
+    }
+  } else if (syscall_num == SYS_VFSREAD) {
+    char *filename = (char *)r->ebx;
+    char *buf = (char *)r->ecx;
     r->eax = 0;
 
-    for (int i = 0; i < DMEM_ADDR_LIMIT; i++) {
-      dmem_entry *entry = &dmem_addr[i];
-      if (entry->addr == r->ebx) {
-        dmem_unmapped_i++;
-        dmem_entry *unmapped_entry = &dmem_unmapped_addr[dmem_unmapped_i];
-        last_unmapped_addr = entry->addr;
-        last_unmapped_len = entry->len;
-        entry->addr = 0;
-        entry->len = 0;
-        r->eax = entry->addr;
+    for (long unsigned int i = 0; i < VFS_ESIZE; i++) {
+      vfs_file *file = &vfs[i];
+      if (strcmp(file->name, filename) == 0) {
+        memcpy(buf, file->content, VFS_MAX_FILE_SIZE);
+        r->eax = (dword)file->content;
       }
     }
   }

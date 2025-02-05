@@ -17,9 +17,10 @@ typedef struct {
 } regs;
 
 typedef struct {
-  dword addr;
-  dword len;
-} dmem_entry;
+  char name[VFS_MAX_FILE_NAME];
+  char content[VFS_MAX_FILE_SIZE];
+  // rest is the file contents
+} vfs_file;
 
 typedef struct {
   char x;
