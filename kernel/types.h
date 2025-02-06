@@ -19,7 +19,6 @@ typedef struct {
 typedef struct {
   char name[VFS_MAX_FILE_NAME];
   char content[VFS_MAX_FILE_SIZE];
-  // rest is the file contents
 } vfs_file;
 
 typedef struct {
