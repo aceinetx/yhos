@@ -82,7 +82,7 @@ void syscall_handler(regs *r) {
         name_size += strlen((char *)&vfs[i]) + 1;
         dword size;
         memcpy(&size, &vfs[i + name_size], sizeof(dword));
-        i += name_size + size + 1;
+        i += name_size + size + 1 + sizeof(dword);
       }
     }
   } else if (syscall_num == SYS_VFSREAD) {
@@ -92,11 +92,20 @@ void syscall_handler(regs *r) {
     dword buf_size = r->edx;
     r->eax = 0;
 
-    for (int i = 0; i < (int)VFS_SIZE;) {
+    int i = 0;
+    for (;;) {
+      if (i >= (int)VFS_SIZE) {
+        break;
+      }
       char c = vfs[i];
       if (c != '\0') {
         if (strcmp((char *)&vfs[i], filename) != 0) {
-          break;
+          dword name_size;
+          name_size += strlen((char *)&vfs[i]) + 1;
+          dword size;
+          memcpy(&size, &vfs[i + name_size], sizeof(dword));
+          i += name_size + size + 1 + sizeof(dword);
+          continue;
         }
 
         memcpy(buf, &vfs[i + filename_size + 1 + sizeof(dword)], buf_size);
@@ -107,7 +116,7 @@ void syscall_handler(regs *r) {
         name_size += strlen((char *)&vfs[i]) + 1;
         dword size;
         memcpy(&size, &vfs[i + name_size], sizeof(dword));
-        i += name_size + size + 1;
+        i += name_size + size + 1 + sizeof(dword);
       }
     }
   }
