@@ -78,11 +78,21 @@ void syscall_handler(regs *r) {
         r->eax = (dword)(&vfs[i]);
         break;
       } else {
-        dword name_size;
-        name_size += strlen((char *)&vfs[i]) + 1;
-        dword size;
-        memcpy(&size, &vfs[i + name_size], sizeof(dword));
-        i += name_size + size + 1 + sizeof(dword);
+        if (strcmp((char *)&vfs[i], filename) != 0) {
+          /*dword name_size;
+          name_size += strlen((char *)&vfs[i]) + 1;
+          dword size;
+          memcpy(&size, &vfs[i + name_size], sizeof(dword));
+          i += name_size + size + 1 + sizeof(dword);*/
+          i += strlen((char *)&vfs[i]) + 1;
+          dword size;
+          memcpy(&size, &vfs[i], sizeof(dword));
+          i += size + sizeof(dword) + 1;
+          continue;
+        }
+
+        memcpy(&vfs[i + filename_size + 1 + sizeof(dword)], buf, buf_size);
+        break;
       }
     }
   } else if (syscall_num == SYS_VFSREAD) {
@@ -100,11 +110,15 @@ void syscall_handler(regs *r) {
       char c = vfs[i];
       if (c != '\0') {
         if (strcmp((char *)&vfs[i], filename) != 0) {
-          dword name_size;
+          /*dword name_size;
           name_size += strlen((char *)&vfs[i]) + 1;
           dword size;
           memcpy(&size, &vfs[i + name_size], sizeof(dword));
-          i += name_size + size + 1 + sizeof(dword);
+          i += name_size + size + 1 + sizeof(dword);*/
+          i += strlen((char *)&vfs[i]) + 1;
+          dword size;
+          memcpy(&size, &vfs[i], sizeof(dword));
+          i += size + sizeof(dword) + 1;
           continue;
         }
 
@@ -112,11 +126,15 @@ void syscall_handler(regs *r) {
         r->eax = (dword)(&vfs[i]);
         break;
       } else {
-        dword name_size;
+        /*dword name_size;
         name_size += strlen((char *)&vfs[i]) + 1;
         dword size;
         memcpy(&size, &vfs[i + name_size], sizeof(dword));
-        i += name_size + size + 1 + sizeof(dword);
+        i += name_size + size + 1 + sizeof(dword);*/
+        i += strlen((char *)&vfs[i]) + 1;
+        dword size;
+        memcpy(&size, &vfs[i], sizeof(dword));
+        i += size + sizeof(dword) + 1;
       }
     }
   }
