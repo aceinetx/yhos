@@ -23,7 +23,20 @@ char args[sizeof(cmd)][10];
 void default_arrow() { strncpy(arrow, "> ", 255); }
 
 void ls() {
-  for (int i = 0; i < VFS_SIZE; i++) {
+  int i = 0;
+  for (;;) {
+    if (vfs[i] != 0) {
+      syscall(SYS_WRITE, &vfs[i]);
+      syscall(SYS_WRITE, "\n");
+
+      i += strlen((char *)&vfs[i]) + 1;
+      dword size;
+      memcpy(&size, &vfs[i], sizeof(dword));
+      i += size + sizeof(dword) + 1;
+      continue;
+    } else {
+      break;
+    }
   }
 }
 
