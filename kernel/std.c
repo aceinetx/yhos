@@ -39,6 +39,15 @@ dword strnlen(char *s, dword maxlen) {
   return i;
 }
 
+dword strlen(char *s) {
+  dword i;
+
+  for (i = 0; 1; ++i)
+    if (s[i] == '\0')
+      break;
+  return i;
+}
+
 char *strncpy(char *s1, char *s2, dword n) {
   dword size = strnlen(s2, n);
   if (size != n)

@@ -17,8 +17,7 @@ typedef struct {
 } regs;
 
 typedef struct {
-  char name[VFS_MAX_FILE_NAME];
-  char content[VFS_MAX_FILE_SIZE];
+  dword size;
 } vfs_file;
 
 typedef struct {

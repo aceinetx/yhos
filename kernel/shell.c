@@ -23,12 +23,7 @@ char args[sizeof(cmd)][10];
 void default_arrow() { strncpy(arrow, "> ", 255); }
 
 void ls() {
-  for (int i = 0; i < (int)VFS_ESIZE; i++) {
-    vfs_file *file = &vfs[i];
-    if (file->name[0] == '\0' && file->content[0] == '\0')
-      break;
-    syscall(SYS_WRITE, file->name);
-    syscall(SYS_WRITE, "\n");
+  for (int i = 0; i < VFS_SIZE; i++) {
   }
 }
 
@@ -59,9 +54,9 @@ void shell() {
     vgavec2 initial_pos = get_cursor_pos();
     syscall(SYS_GETS, cmd, sizeof(cmd));
     default_arrow();
-    splitcmd();
+    // splitcmd();
 
-    syscall(SYS_WRITE, args[1]);
+    // syscall(SYS_WRITE, args[1]);
     if (strcmp(cmd, "EXIT") == 0) {
       syscall(SYS_WRITE, "halted\n");
       break;
