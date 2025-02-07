@@ -109,7 +109,7 @@ void shell() {
              VGA_WIDTH * VGA_HEIGHT * sizeof(word));
       set_cursor_pos(0, 0);
     } else if (strcmp(arg_buf, "x") == 0) {
-      syscall(SYS_VFSWRITE, ".vfstest1", "Q", 2);
+      syscall(SYS_VFSWRITE, ".vfstest1", "Hello there", 12);
     } else {
       if (cmd[0] != '\0') {
         syscall(SYS_WRITE, "(no match)\n");

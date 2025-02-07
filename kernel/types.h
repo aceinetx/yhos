@@ -1,6 +1,11 @@
 #pragma once
 
 #include <stdint.h>
+
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
+
 typedef uint8_t byte;
 typedef uint16_t word;
 typedef uint32_t dword;

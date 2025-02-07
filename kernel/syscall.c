@@ -13,6 +13,13 @@ dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
   return ret;
 }
 
+void shift_elements(char arr[], int length, int shift_index) {
+  for (int i = length - 2; i >= shift_index; i--) {
+    arr[i + 1] = arr[i];
+  }
+  arr[shift_index] = 0;
+}
+
 void syscall_handler(regs *r) {
   dword syscall_num = r->eax;
   if (syscall_num == SYS_WRITEC) {
@@ -90,8 +97,35 @@ void syscall_handler(regs *r) {
           i += size + sizeof(dword) + 1;
           continue;
         }
+        dword size;
+        memcpy(&size, &vfs[i + filename_size + 1], sizeof(dword));
+        dword index = (i + filename_size + 1 + sizeof(dword));
 
-        memcpy(&vfs[i + filename_size + 1 + sizeof(dword)], buf, buf_size);
+        if (buf_size > size) {
+          // resize the entire vfs
+          //
+          for (dword k = 0; k < buf_size; k++) {
+            for (dword j = VFS_SIZE - 2; j >= index; j--) {
+              vfs[j + 1] = vfs[j];
+            }
+            vfs[index] = 0;
+          }
+        }
+
+        char *buf_p = &vfs[index - buf_size];
+
+        for (int j = 0; j < 30; j++) {
+          if (vfs[i + i] == 0) {
+            syscall(SYS_WRITE, "'");
+          }
+          char buf[2];
+          buf[0] = vfs[i + j];
+          buf[1] = 0;
+          syscall(SYS_WRITE, buf);
+        }
+        syscall(SYS_WRITE, "\n");
+
+        memcpy(buf_p, buf, buf_size);
         break;
       }
     }

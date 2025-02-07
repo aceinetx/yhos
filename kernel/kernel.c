@@ -5,6 +5,7 @@
 #include <kernel/syscall.h>
 #include <kernel/types.h>
 #include <kernel/version.h>
+#include <kernel/yalloc.h>
 
 void vfs_check1() {
   dword result;
@@ -78,5 +79,12 @@ void main() {
   syscall(SYS_WRITE,
           "[...] all checks passed, vfs supports reading & writing\n");
 
-  shell();
+  // shell();
+
+  void *buf = yalloc(2);
+  memcpy(buf, "Q\0", 2);
+
+  syscall(SYS_WRITE, buf);
+
+  yfree(buf);
 }
