@@ -14,6 +14,7 @@ char help_msg[] = "Available commands: \n"
                   "test   - do a test\n"
                   "ls     - list files in current working directory\n"
                   "cat    - print contents of a file\n"
+                  "run    - run a executable\n"
                   "clear  - clear the screen\n";
 
 void kernel_test();
@@ -100,6 +101,13 @@ void shell() {
       set_cursor_pos(0, 0);
     } else if (strcmp(arg_buf, "x") == 0) {
       syscall(SYS_VFSWRITE, ".vfstest1", "Hello there", 12);
+    } else if (strcmp(arg_buf, "run") == 0) {
+      nextarg();
+      dword exe_size = syscall(SYS_VFSQUERY, arg_buf);
+      if (exe_size == (dword)-1) {
+        syscall(SYS_WRITE, "No such file or directory\n");
+      } else {
+      }
     } else {
       if (cmd[0] != '\0') {
         syscall(SYS_WRITE, "(no match)\n");

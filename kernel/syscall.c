@@ -143,5 +143,21 @@ void syscall_handler(regs *r) {
         }
       }
     }
+  } else if (syscall_num == SYS_VFSQUERY) {
+    char *filename = (char *)r->ebx;
+    r->eax = -1;
+
+    if (vfs != NULL) {
+      for (dword i = 0; i < vfs_size; i++) {
+        vfs_file *file = &vfs[i];
+        if (file->content == NULL)
+          continue;
+
+        if (strcmp(file->name, filename) == 0) {
+          r->eax = file->size;
+          break;
+        }
+      }
+    }
   }
 }

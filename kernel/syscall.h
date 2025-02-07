@@ -6,6 +6,7 @@
 #define SYS_GETS 2
 #define SYS_VFSWRITE 3
 #define SYS_VFSREAD 4
+#define SYS_VFSQUERY 5
 
 #define vrg_cnt(vrg1, vrg2, vrg3, vrg4, vrg5, vrg6, vrg7, vrg8, vrgN, ...) vrgN
 #define vrg_argn(...) vrg_cnt(__VA_ARGS__, 8, 7, 6, 5, 4, 3, 2, 1, 0)
