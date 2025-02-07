@@ -3,6 +3,7 @@
 #include <kernel/std.h>
 #include <kernel/syscall.h>
 #include <kernel/version.h>
+#include <kernel/yalloc.h>
 
 #define SHELL_CONST1 255
 
@@ -107,6 +108,12 @@ void shell() {
       if (exe_size == (dword)-1) {
         syscall(SYS_WRITE, "No such file or directory\n");
       } else {
+        void *code = yalloc(exe_size);
+        yhse_hdr *header = (yhse_hdr *)code;
+
+        syscall(SYS_VFSREAD, arg_buf, code, exe_size);
+
+        ((elf_entry_t)((dword)code + *(dword *)header))();
       }
     } else {
       if (cmd[0] != '\0') {

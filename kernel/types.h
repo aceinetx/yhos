@@ -9,6 +9,7 @@
 typedef uint8_t byte;
 typedef uint16_t word;
 typedef uint32_t dword;
+typedef void (*elf_entry_t)();
 
 typedef struct {
   dword edi;
@@ -31,3 +32,8 @@ typedef struct {
   char x;
   char y;
 } vgavec2;
+
+// yhSE header
+typedef struct {
+  dword entry;
+} yhse_hdr;
