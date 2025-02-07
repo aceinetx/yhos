@@ -85,7 +85,7 @@ void syscall_handler(regs *r) {
       r->eax = (dword)vfs;
       vfs_size = 1;
     } else {
-      for (int i = 0; i < vfs_size; i++) {
+      for (dword i = 0; i < vfs_size; i++) {
         vfs_file *file = &vfs[i];
         if (file->content == NULL)
           continue;
@@ -127,12 +127,11 @@ void syscall_handler(regs *r) {
   } else if (syscall_num == SYS_VFSREAD) {
     char *filename = (char *)r->ebx;
     char *buf = (char *)r->ecx;
-    dword filename_size = strlen(filename);
     dword buf_size = r->edx;
     r->eax = 0;
 
     if (vfs != NULL) {
-      for (int i = 0; i < vfs_size; i++) {
+      for (dword i = 0; i < vfs_size; i++) {
         vfs_file *file = &vfs[i];
         if (file->content == NULL)
           continue;

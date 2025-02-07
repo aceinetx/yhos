@@ -1,7 +1,7 @@
 dir_guard = @mkdir -p build
 BINS = build/yhos.img build/kernel_entry.o build/kernel.o build/void.bin build/boot.bin build/lowlevel.o build/syscall.o build/keyboard.o build/shell.o build/std.o build/test.o build/yalloc.o
 GIT_COMMIT = $(shell git describe --always)
-CFLAGS = -I. -Wall -Wpedantic -Wextra -DGIT_COMMIT='"$(GIT_COMMIT)"' -DVFS_SIZE=4096
+CFLAGS = -I. -Werror -Wall -Wpedantic -Wextra -DGIT_COMMIT='"$(GIT_COMMIT)"' -DVFS_SIZE=4096
 NASM_COLOR = @echo -e -n "\x1b[38;5;94m"
 GCC_COLOR = @echo -e -n "\x1b[38;5;244m"
 LD_COLOR = @echo -e -n "\x1b[38;5;51m"
@@ -12,7 +12,7 @@ all: $(BINS)
 build/yhos.img: $(BINS)
 	$(dir_guard)
 	$(LD_COLOR)
-	i386-elf-ld -o build/kernel.bin -Ttext 0x1000 build/kernel_entry.o build/kernel.o build/lowlevel.o build/syscall.o build/keyboard.o build/shell.o build/std.o build/test.o build/yalloc.o --oformat binary
+	i386-elf-ld -w -o build/kernel.bin -Ttext 0x1000 build/kernel_entry.o build/kernel.o build/lowlevel.o build/syscall.o build/keyboard.o build/shell.o build/std.o build/test.o build/yalloc.o --oformat binary
 	$(RESET_COLOR)
 	cat build/boot.bin build/kernel.bin build/void.bin > build/yhos.bin
 	cp build/yhos.bin build/yhos.img

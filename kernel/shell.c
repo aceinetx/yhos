@@ -26,7 +26,7 @@ char *arg_p;
 void default_arrow() { strncpy(arrow, "> ", SHELL_CONST1); }
 
 void ls() {
-  for (int i = 0; i < vfs_size; i++) {
+  for (dword i = 0; i < vfs_size; i++) {
     vfs_file *file = &vfs[i];
     syscall(SYS_WRITE, file->name);
     syscall(SYS_WRITE, "\n");

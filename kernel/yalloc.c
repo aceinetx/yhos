@@ -96,7 +96,7 @@ void yfree(void *ptr) {
 
   // Coalesce next
   header_t *next = (header_t *)((char *)header + size);
-  if ((char *)next < heap_end && !(next->size & 1)) {
+  if ((char *)next < (char *)heap_end && !(next->size & 1)) {
     size += next->size & ~1;
     free_block_t *next_block = (free_block_t *)next;
     if (next_block->prev)
@@ -109,7 +109,7 @@ void yfree(void *ptr) {
 
   // Coalesce previous
   footer_t *prev_footer = (footer_t *)((char *)header - sizeof(footer_t));
-  if ((char *)prev_footer >= heap_start) {
+  if ((char *)prev_footer >= (char *)heap_start) {
     header_t *prev = (header_t *)((char *)prev_footer -
                                   (prev_footer->size & ~1) + sizeof(footer_t));
     if (!(prev->size & 1)) {
