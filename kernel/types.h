@@ -23,6 +23,8 @@ typedef struct {
 
 typedef struct {
   dword size;
+  char *content;
+  char *name;
 } vfs_file;
 
 typedef struct {

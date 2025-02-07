@@ -25,23 +25,7 @@ char *arg_p;
 
 void default_arrow() { strncpy(arrow, "> ", SHELL_CONST1); }
 
-void ls() {
-  int i = 0;
-  for (;;) {
-    if (vfs[i] != 0) {
-      syscall(SYS_WRITE, &vfs[i]);
-      syscall(SYS_WRITE, "\n");
-
-      i += strlen((char *)&vfs[i]) + 1;
-      dword size;
-      memcpy(&size, &vfs[i], sizeof(dword));
-      i += size + sizeof(dword) + 1;
-      continue;
-    } else {
-      break;
-    }
-  }
-}
+void ls() {}
 
 void nextarg() {
   memset(arg_buf, 0, SHELL_CONST1);

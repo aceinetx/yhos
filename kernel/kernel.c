@@ -69,7 +69,8 @@ void main() {
   syscall(SYS_WRITE, "[...] git commit: " GIT_COMMIT "\n");
 
   syscall(SYS_WRITE, "[...] mem reset\n");
-  memset(vfs, 0, VFS_SIZE);
+  init_allocator((void *)0x200000, 0x200000);
+  vfs = NULL;
 
   syscall(SYS_WRITE, "[...] testing vfs\n");
 
@@ -79,12 +80,5 @@ void main() {
   syscall(SYS_WRITE,
           "[...] all checks passed, vfs supports reading & writing\n");
 
-  // shell();
-
-  void *buf = yalloc(2);
-  memcpy(buf, "Q\0", 2);
-
-  syscall(SYS_WRITE, buf);
-
-  yfree(buf);
+  shell();
 }

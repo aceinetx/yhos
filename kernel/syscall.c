@@ -2,8 +2,10 @@
 #include <kernel/lowlevel.h>
 #include <kernel/std.h>
 #include <kernel/syscall.h>
+#include <kernel/yalloc.h>
 
-byte vfs[VFS_SIZE] = {0};
+vfs_file *vfs;
+dword vfs_size;
 
 dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
   asm volatile("int $0x80" : : "a"(eax), "b"(ebx), "c"(ecx), "d"(edx));
@@ -11,13 +13,6 @@ dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
   dword ret;
   asm volatile("pop %0\n" : "=a"(ret));
   return ret;
-}
-
-void shift_elements(char arr[], int length, int shift_index) {
-  for (int i = length - 2; i >= shift_index; i--) {
-    arr[i + 1] = arr[i];
-  }
-  arr[shift_index] = 0;
 }
 
 void syscall_handler(regs *r) {
@@ -71,62 +66,62 @@ void syscall_handler(regs *r) {
     dword buf_size = r->edx;
     r->eax = 0;
 
-    for (int i = 0; i < (int)VFS_SIZE;) {
-      char c = vfs[i];
-      if (c == '\0') {
-        if (i + filename_size + buf_size > VFS_SIZE) {
+    if (vfs == NULL) {
+      vfs = yalloc(sizeof(vfs_file));
+
+      vfs_file file;
+      char *vbuf = yalloc(buf_size);
+      memcpy(vbuf, buf, buf_size);
+
+      char *vfilename = yalloc(filename_size + 1);
+      memcpy(vfilename, filename, filename_size + 1);
+
+      file.size = buf_size;
+      file.content = vbuf;
+      file.name = vfilename;
+
+      vfs[0] = file;
+
+      r->eax = (dword)vfs;
+      vfs_size = 1;
+    } else {
+      for (int i = 0; i < vfs_size; i++) {
+        vfs_file *file = &vfs[i];
+        if (file->content == NULL)
+          continue;
+
+        if (strcmp(file->name, filename) == 0) {
+          char *new_content = yalloc(buf_size);
+          memcpy(new_content, buf, buf_size);
+          yfree(file->content);
+          file->content = new_content;
+
+          r->eax = (dword)file;
           break;
         }
+      }
 
-        memcpy(&vfs[i], filename, filename_size + 1);
-        memcpy(&vfs[i + filename_size + 1], &buf_size, sizeof(dword));
-        memcpy(&vfs[i + filename_size + 1 + sizeof(dword)], buf, buf_size);
+      if (r->eax == 0) {
+        vfs_file *new_vfs = yalloc(sizeof(vfs_file) * (vfs_size + 1));
+        memcpy(new_vfs, vfs, sizeof(vfs_file) * vfs_size);
+        yfree(vfs);
+        vfs = new_vfs;
 
-        r->eax = (dword)(&vfs[i]);
-        break;
-      } else {
-        if (strcmp((char *)&vfs[i], filename) != 0) {
-          /*dword name_size;
-          name_size += strlen((char *)&vfs[i]) + 1;
-          dword size;
-          memcpy(&size, &vfs[i + name_size], sizeof(dword));
-          i += name_size + size + 1 + sizeof(dword);*/
-          i += strlen((char *)&vfs[i]) + 1;
-          dword size;
-          memcpy(&size, &vfs[i], sizeof(dword));
-          i += size + sizeof(dword) + 1;
-          continue;
-        }
-        dword size;
-        memcpy(&size, &vfs[i + filename_size + 1], sizeof(dword));
-        dword index = (i + filename_size + 1 + sizeof(dword));
+        vfs_file file;
+        char *vbuf = yalloc(buf_size);
+        memcpy(vbuf, buf, buf_size);
 
-        if (buf_size > size) {
-          // resize the entire vfs
-          //
-          for (dword k = 0; k < buf_size; k++) {
-            for (dword j = VFS_SIZE - 2; j >= index; j--) {
-              vfs[j + 1] = vfs[j];
-            }
-            vfs[index] = 0;
-          }
-        }
+        char *vfilename = yalloc(filename_size + 1);
+        memcpy(vfilename, filename, filename_size + 1);
 
-        char *buf_p = &vfs[index - buf_size];
+        file.size = buf_size;
+        file.content = vbuf;
+        file.name = vfilename;
 
-        for (int j = 0; j < 30; j++) {
-          if (vfs[i + i] == 0) {
-            syscall(SYS_WRITE, "'");
-          }
-          char buf[2];
-          buf[0] = vfs[i + j];
-          buf[1] = 0;
-          syscall(SYS_WRITE, buf);
-        }
-        syscall(SYS_WRITE, "\n");
+        new_vfs[vfs_size] = file;
+        r->eax = (dword)(&new_vfs[vfs_size]);
 
-        memcpy(buf_p, buf, buf_size);
-        break;
+        vfs_size++;
       }
     }
   } else if (syscall_num == SYS_VFSREAD) {
@@ -136,39 +131,17 @@ void syscall_handler(regs *r) {
     dword buf_size = r->edx;
     r->eax = 0;
 
-    int i = 0;
-    for (;;) {
-      if (i >= (int)VFS_SIZE) {
-        break;
-      }
-      char c = vfs[i];
-      if (c != '\0') {
-        if (strcmp((char *)&vfs[i], filename) != 0) {
-          /*dword name_size;
-          name_size += strlen((char *)&vfs[i]) + 1;
-          dword size;
-          memcpy(&size, &vfs[i + name_size], sizeof(dword));
-          i += name_size + size + 1 + sizeof(dword);*/
-          i += strlen((char *)&vfs[i]) + 1;
-          dword size;
-          memcpy(&size, &vfs[i], sizeof(dword));
-          i += size + sizeof(dword) + 1;
+    if (vfs != NULL) {
+      for (int i = 0; i < vfs_size; i++) {
+        vfs_file *file = &vfs[i];
+        if (file->content == NULL)
           continue;
-        }
 
-        memcpy(buf, &vfs[i + filename_size + 1 + sizeof(dword)], buf_size);
-        r->eax = (dword)(&vfs[i]);
-        break;
-      } else {
-        /*dword name_size;
-        name_size += strlen((char *)&vfs[i]) + 1;
-        dword size;
-        memcpy(&size, &vfs[i + name_size], sizeof(dword));
-        i += name_size + size + 1 + sizeof(dword);*/
-        i += strlen((char *)&vfs[i]) + 1;
-        dword size;
-        memcpy(&size, &vfs[i], sizeof(dword));
-        i += size + sizeof(dword) + 1;
+        if (strcmp(file->name, filename) == 0) {
+          memcpy(buf, file->content, buf_size);
+          r->eax = (dword)file;
+          break;
+        }
       }
     }
   }
