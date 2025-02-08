@@ -1,7 +1,7 @@
 # yhos
 dos like operating system or smth idk
 ## Build
-Requires i386-elf toolchain (To install use homebrew)
+Requires i386-elf toolchain, nasm and fasm (To install the toolchain use homebrew)
 ```
 ./makegen
 make
