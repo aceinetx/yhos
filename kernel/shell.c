@@ -108,12 +108,12 @@ void shell() {
       if (exe_size == (dword)-1) {
         syscall(SYS_WRITE, "No such file or directory\n");
       } else {
-        void *code = yalloc(exe_size);
+        void *code = (void *)0x1000;
         yhse_hdr *header = (yhse_hdr *)code;
 
         syscall(SYS_VFSREAD, arg_buf, code, exe_size);
 
-        ((elf_entry_t)((dword)code + *(dword *)header))();
+        ((elf_entry_t)((dword)header->entry))();
       }
     } else {
       if (cmd[0] != '\0') {
