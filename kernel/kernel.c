@@ -7,6 +7,10 @@
 #include <kernel/version.h>
 #include <kernel/yalloc.h>
 
+#ifdef ROM_EXISTS
+#include <kernel/rom.h>
+#endif
+
 void vfs_check1() {
   dword result;
   result = syscall(SYS_VFSWRITE, ".vfstest1", "1", 2);
@@ -88,7 +92,9 @@ void main() {
   syscall(SYS_WRITE,
           "[...] all checks passed, vfs supports reading & writing\n");
 
-  add_test_exe();
+#ifdef ROM_EXISTS
+  set_rom();
+#endif
 
   shell();
 }

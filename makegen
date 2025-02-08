@@ -1,0 +1,23 @@
+#!/usr/bin/bash
+
+echo "Makefile generator for yhOS"
+
+if [ -f Makefile ]; then
+	rm Makefile
+fi
+
+if [ ! -f .Makefile ]; then
+	echo "Makefile template does not exist. Cannot continue"
+	exit
+fi
+
+# check if kernel/rom.h exists, then the kernel can use it checking for ROM_EXISTS definition
+if [ ! -f kernel/rom.h ]; then
+	echo "CFLAGS = -I. -Werror -Wall -Wextra -DGIT_COMMIT='\"\$(GIT_COMMIT)\"' -DVFS_SIZE=4096" >> Makefile
+	echo "ROMFILE =" >> Makefile
+else
+	echo "CFLAGS = -I. -Werror -Wall -Wextra -DGIT_COMMIT='\"\$(GIT_COMMIT)\"' -DVFS_SIZE=4096 -DROM_EXISTS" >> Makefile
+	echo "ROMFILE = kernel/rom.h" >> Makefile
+fi
+cat .Makefile >> Makefile
+echo "Generated successfully"
