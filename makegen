@@ -7,6 +7,20 @@
 set -e
 
 echo "Makefile generator for yhOS"
+dcc_found="0"
+if which dcc >/dev/null; then
+	dcc_found="1"
+fi
+
+if [ "$FORCE_DCC" == "1" ]; then
+	dcc_found="1"
+fi
+
+if [ "$dcc_found" == "1" ]; then
+	echo "DC compiler detected, going to use it"
+else
+	echo "DC compiler not detected"
+fi
 
 if [ -f Makefile ]; then
 	rm Makefile
@@ -28,12 +42,11 @@ else
 	romfile="kernel/rom.h"
 fi
 
-if which dcc >/dev/null; then
-	echo "DC compiler detected, going to use it"
+if [ "$dcc_found" == "1" ]; then
 	cflags="${cflags} -DDCC_EXISTS"
 	makegen_deps="${makegen_deps} build/dc_test.o"
 else
-	echo "DC compiler not detected"
+	cflags="${cflags}"
 fi
 
 echo ${cflags} >> Makefile
@@ -41,7 +54,7 @@ echo "ROMFILE = ${romfile}" >> Makefile
 echo "MAKEGEN_DEPS =${makegen_deps}" >> Makefile
 cat .Makefile >> Makefile
 
-if which dcc >/dev/null; then
+if [ "$dcc_found" == "1" ]; then
 	echo "" >> Makefile
 	echo "build/dc_test.o: build/dc_test.ll" >> Makefile
 	echo "	\$(dir_guard)" >> Makefile
