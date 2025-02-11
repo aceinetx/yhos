@@ -21,7 +21,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo libexpat-dev nasm
 
-    - name: Download/build i386-elf toolchain, DCC and fasm
+    - name: Download/build i386-elf toolchain and fasm
       run: |
         # Download and extract the i386-elf toolchain source
         wget https://ftp.gnu.org/gnu/binutils/binutils-2.37.tar.xz
@@ -45,10 +45,6 @@ jobs:
         sudo make install-gcc
         cd ..
 
-        # Download DCC
-        wget https://github.com/dc-lang/dc/releases/download/nightly-release/dcc-x86_64
-        sudo mv dcc-x86_64 /usr/bin/dcc
-
         # Download fasm
         wget https://flatassembler.net/fasm-1.73.32.tgz
         tar -xf fasm-1.73.32.tgz
@@ -58,7 +54,12 @@ jobs:
 
     - name: Build
       run: |
-        export PATH="/usr/local/i386-elf/bin:$PATH"
+
+        # Download DCC
+        wget https://github.com/dc-lang/dc/releases/download/nightly-release/dcc-x86_64
+        mv ./dcc-x86_64 ./dcc
+        export PATH="/usr/local/i386-elf/bin:$PATH:$(pwd)"
+
         ./buildall.sh
       
     - name: Upload artifact
