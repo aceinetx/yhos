@@ -1,5 +1,5 @@
 # yhos
-dos like operating system or smth idk
+DOS-like operating system for x86 legacy hardware
 ## Build
 Requires i386-elf toolchain, nasm and fasm (To install the toolchain use homebrew)
 ```
