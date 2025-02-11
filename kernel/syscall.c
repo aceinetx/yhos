@@ -159,5 +159,9 @@ void syscall_handler(regs *r) {
         }
       }
     }
+  } else if (syscall_num == SYS_ALLOC) {
+    r->eax = (dword)yalloc(r->ebx);
+  } else if (syscall_num == SYS_FREE) {
+    yfree((void *)r->ebx);
   }
 }

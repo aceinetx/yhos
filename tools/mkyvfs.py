@@ -16,8 +16,9 @@ void set_rom(){
 """
 
 filename_i = 0
-for filename in sys.argv[1::]:
-    with open(filename, "+rb") as f:
+for _filename in sys.argv[1::]:
+    filename = os.path.basename(_filename)
+    with open(_filename, "+rb") as f:
         print(f"[...] processing {filename}")
         cgen += f"unsigned char dat{filename_i}[] = "+"{"
 

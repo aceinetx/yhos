@@ -113,7 +113,8 @@ void shell() {
 
         syscall(SYS_VFSREAD, arg_buf, code, exe_size);
 
-        ((elf_entry_t)((dword)header->entry))();
+        entry_t start = (entry_t)header->entry;
+        start();
       }
     } else {
       if (cmd[0] != '\0') {

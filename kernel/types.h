@@ -9,7 +9,7 @@
 typedef uint8_t byte;
 typedef uint16_t word;
 typedef uint32_t dword;
-typedef void (*elf_entry_t)();
+typedef void (*entry_t)();
 
 typedef struct {
   dword edi;
