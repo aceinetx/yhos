@@ -1,3 +1,8 @@
+##
+## yhOS
+## Copyright (c) aceinet
+## License: GPL-2.0
+##
 dir_guard = @mkdir -p build
 
 build/zero: build/zero.o

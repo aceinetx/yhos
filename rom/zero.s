@@ -1,3 +1,9 @@
+;;
+;; yhOS
+;; Copyright (c) aceinet
+;; License: GPL-2.0
+;;
+
 format ELF
 org 0x40000
 

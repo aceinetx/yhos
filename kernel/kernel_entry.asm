@@ -1,3 +1,8 @@
+;;
+;; yhOS
+;; Copyright (c) aceinet
+;; License: GPL-2.0
+;;
 section .text
 [bits 32]
 [extern main]

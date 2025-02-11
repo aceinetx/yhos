@@ -1,3 +1,8 @@
+/*
+ * yhOS
+ * Copyright (c) aceinet
+ * License: GPL-2.0
+ */
 #include <kernel/syscall.h>
 #include <kernel/yalloc.h>
 

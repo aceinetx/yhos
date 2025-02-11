@@ -1,3 +1,8 @@
+##
+## yhOS
+## Copyright (c) aceinet
+## License: GPL-2.0
+##
 import os, sys
 
 print("yhOS vfs ROM generator")

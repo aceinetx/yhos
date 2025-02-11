@@ -1,3 +1,8 @@
+/*
+ * yhOS
+ * Copyright (c) aceinet
+ * License: GPL-2.0
+ */
 #include <kernel/keyboard.h>
 #include <kernel/lowlevel.h>
 #include <kernel/shell.h>

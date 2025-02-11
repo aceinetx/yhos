@@ -1,3 +1,8 @@
+;;
+;; yhOS
+;; Copyright (c) aceinet
+;; License: GPL-2.0
+;;
 [org 0x7c00]                        
 KERNEL_LOCATION equ 0x1000
                                     

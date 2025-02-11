@@ -1,3 +1,9 @@
+;;
+;; yhOS
+;; Copyright (c) aceinet
+;; License: GPL-2.0
+;;
+
 ;; fasm
 format ELF
 use32

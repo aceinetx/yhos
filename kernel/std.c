@@ -1,3 +1,8 @@
+/*
+ * yhOS
+ * Copyright (c) aceinet
+ * License: GPL-2.0
+ */
 #include <kernel/std.h>
 
 int strcmp(char *p1, char *p2) {

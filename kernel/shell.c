@@ -1,3 +1,8 @@
+/*
+ * yhOS
+ * Copyright (c) aceinet
+ * License: GPL-2.0
+ */
 #include <kernel/lowlevel.h>
 #include <kernel/shell.h>
 #include <kernel/std.h>

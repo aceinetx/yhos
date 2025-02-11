@@ -1,3 +1,8 @@
+##
+## yhOS
+## Copyright (c) aceinet
+## License: GPL-2.0
+##
 dir_guard = @mkdir -p build
 BINS = build/yhos.img build/kernel_entry.o build/kernel.o build/void.bin build/boot.bin build/lowlevel.o build/syscall.o build/keyboard.o build/shell.o build/std.o build/test.o build/yalloc.o
 GIT_COMMIT = $(shell git describe --always)
