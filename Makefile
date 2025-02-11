@@ -31,7 +31,7 @@ build/keyboard.o: kernel/keyboard.c kernel/keyboard.h kernel/types.h kernel/lowl
 	i386-elf-gcc -m32 -ffreestanding -g -c $< -o $@ $(CFLAGS)
 	$(RESET_COLOR)
 
-build/syscall.o: kernel/syscall.c kernel/syscall.h kernel/types.h kernel/lowlevel.h kernel/keyboard.h kernel/std.h kernel/yalloc.h
+build/syscall.o: kernel/syscall.c kernel/syscall.h kernel/types.h kernel/lowlevel.h kernel/keyboard.h kernel/std.h kernel/yalloc.h kernel/shell.h
 	$(dir_guard)
 	$(GCC_COLOR)
 	i386-elf-gcc -m32 -ffreestanding -g -c $< -o $@ $(CFLAGS)

@@ -5,8 +5,6 @@
 #include <kernel/version.h>
 #include <kernel/yalloc.h>
 
-#define SHELL_CONST1 255
-
 char help_msg[] = "Available commands: \n"
                   "exit   - halt the system\n"
                   "reboot - reboot the system\n"
@@ -108,7 +106,7 @@ void shell() {
       if (exe_size == (dword)-1) {
         syscall(SYS_WRITE, "No such file or directory\n");
       } else {
-        void *code = (void *)0x1000;
+        void *code = (void *)0x40000;
         yhse_hdr *header = (yhse_hdr *)code;
 
         syscall(SYS_VFSREAD, arg_buf, code, exe_size);

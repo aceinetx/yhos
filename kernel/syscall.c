@@ -1,5 +1,6 @@
 #include <kernel/keyboard.h>
 #include <kernel/lowlevel.h>
+#include <kernel/shell.h>
 #include <kernel/std.h>
 #include <kernel/syscall.h>
 #include <kernel/yalloc.h>
@@ -163,5 +164,26 @@ void syscall_handler(regs *r) {
     r->eax = (dword)yalloc(r->ebx);
   } else if (syscall_num == SYS_FREE) {
     yfree((void *)r->ebx);
+  } else if (syscall_num == SYS_VFSBASE) {
+    r->eax = (dword)vfs;
+  } else if (syscall_num == SYS_EXEARG) {
+    nextarg();
+    r->eax = (dword)arg_buf;
+  } else if (syscall_num == SYS_VFSHANDLE) {
+    char *filename = (char *)r->ebx;
+    r->eax = 0;
+
+    if (vfs != NULL) {
+      for (dword i = 0; i < vfs_size; i++) {
+        vfs_file *file = &vfs[i];
+        if (file->content == NULL)
+          continue;
+
+        if (strcmp(file->name, filename) == 0) {
+          r->eax = (dword)file;
+          break;
+        }
+      }
+    }
   }
 }
