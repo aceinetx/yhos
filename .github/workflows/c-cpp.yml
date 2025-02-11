@@ -58,6 +58,7 @@ jobs:
         # Download DCC
         wget https://github.com/dc-lang/dc/releases/download/nightly-release/dcc-x86_64
         mv ./dcc-x86_64 ./dcc
+        chmod +x dcc
         export PATH="/usr/local/i386-elf/bin:$PATH:$(pwd)"
 
         FORCE_DCC=1 ./buildall.sh
