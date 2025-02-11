@@ -28,6 +28,10 @@ void default_arrow() { strncpy(arrow, "> ", SHELL_CONST1); }
 void ls() {
   for (dword i = 0; i < vfs_size; i++) {
     vfs_file *file = &vfs[i];
+    if (file->content == NULL || file->name == NULL)
+      continue;
+    if (file->name[0] == '.')
+      continue;
     syscall(SYS_WRITE, file->name);
     syscall(SYS_WRITE, "\n");
   }
@@ -83,16 +87,28 @@ void shell() {
       char filename[SHELL_CONST1];
       memcpy(filename, arg_buf, SHELL_CONST1);
 
-      char buf[4096];
-      memset(buf, 0, sizeof(buf));
-
-      dword result;
-      result = syscall(SYS_VFSREAD, filename, buf, sizeof(buf));
-      if (result == 0) {
+      dword buf_size = syscall(SYS_VFSQUERY, filename);
+      if (buf_size == (dword)-1) {
         syscall(SYS_WRITE, "No such file or directory\n");
       } else {
-        syscall(SYS_WRITE, buf);
-        syscall(SYS_WRITE, "\n");
+        char *buf = yalloc(buf_size);
+        memset(buf, 0, buf_size);
+
+        dword result;
+        result = syscall(SYS_VFSREAD, filename, buf, buf_size);
+        if (result == 0) {
+          syscall(SYS_WRITE, "No such file or directory\n");
+        } else {
+          if (strcmp(buf, "YHSE\0") != 0) {
+            syscall(SYS_WRITE, buf);
+            syscall(SYS_WRITE, "\n");
+          } else {
+            syscall(SYS_WRITE, "Executable detected, parsing header\n");
+            // yhse_hdr *header = (yhse_hdr *)buf;
+            syscall(SYS_WRITE, "Entry point address: ");
+            syscall(SYS_WRITEC, '\n');
+          }
+        }
       }
     } else if (strcmp(arg_buf, "clear") == 0) {
       memcpy(VGA_BUFFER, (void *)0x140000,
