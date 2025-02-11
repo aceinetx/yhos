@@ -1,0 +1,62 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo libexpat-dev nasm
+
+    - name: Download/build i386-elf toolchain, DCC and fasm
+      run: |
+        # Download and extract the i386-elf toolchain source
+        wget https://ftp.gnu.org/gnu/binutils/binutils-2.37.tar.xz
+        tar -xf binutils-2.37.tar.xz
+        wget https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
+        tar -xf gcc-11.2.0.tar.xz
+
+        # Build binutils
+        mkdir build-binutils
+        cd build-binutils
+        ../binutils-2.37/configure --target=i386-elf --prefix=/usr/local/i386-elf --disable-nls --disable-werror
+        make -j$(nproc)
+        sudo make install
+        cd ..
+
+        # Build GCC
+        mkdir build-gcc
+        cd build-gcc
+        ../gcc-11.2.0/configure --target=i386-elf --prefix=/usr/local/i386-elf --disable-nls --enable-languages=c,c++ --without-headers
+        make -j$(nproc) all-gcc
+        sudo make install-gcc
+        cd ..
+
+        # Download DCC
+        wget https://github.com/dc-lang/dc/releases/download/nightly-release/dcc-x86_64
+        sudo mv dcc-x86_64 /usr/bin/dcc
+
+        # Download fasm
+        wget https://flatassembler.net/fasm-1.73.32.tgz
+        tar -xf fasm-1.73.32.tgz
+        cd fasm
+        sudo mv fasm /usr/bin
+        cd ..
+
+    - name: Build
+      run: |
+        export PATH="/usr/local/i386-elf/bin:$PATH"
+        ./buildall.sh
