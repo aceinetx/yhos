@@ -10,6 +10,7 @@ GIT_COMMIT = $(shell git describe --always)
 NASM_COLOR = @echo -e -n "\x1b[38;5;94m"
 GCC_COLOR = @echo -e -n "\x1b[38;5;244m"
 LD_COLOR = @echo -e -n "\x1b[38;5;103m"
+DCC_COLOR = @echo -e -n "\x1b[38;5;207m"
 RESET_COLOR = @echo -e -n "\x1b[0m"
 
 all: $(BINS)
