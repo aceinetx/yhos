@@ -1,7 +1,7 @@
 extern i32 do_syscall i32 i32 i32 i32;
 
 context #nomangle dc_test -> void;
-	do_syscall(0, 'Q', 0, 0);
+	do_syscall(1, "Hello from DC!", 0, 0);
 	do_syscall(0, 10, 0, 0);
 	return;
 context;
