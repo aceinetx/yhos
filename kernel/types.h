@@ -34,6 +34,8 @@ typedef struct {
 } vgavec2;
 
 // yhSE header
+#define YHSE_IDENT 5
 typedef struct {
+  byte ident[YHSE_IDENT];
   dword entry;
 } yhse_hdr;

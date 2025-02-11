@@ -111,8 +111,12 @@ void shell() {
 
         syscall(SYS_VFSREAD, arg_buf, code, exe_size);
 
-        entry_t start = (entry_t)header->entry;
-        start();
+        if (strcmp((char *)header->ident, "YHSE\0") != 0) {
+          syscall(SYS_WRITE, "Check failed: not a valid yhSE executable\n");
+        } else {
+          entry_t start = (entry_t)((dword)code + 0x5);
+          start();
+        }
       }
     } else {
       if (cmd[0] != '\0') {

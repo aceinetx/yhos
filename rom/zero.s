@@ -2,6 +2,7 @@ format ELF
 org 0x40000
 
 ;; yhse header begin
+db "YHSE", 0
 dd _start
 ;; yhse header end
 
@@ -52,8 +53,10 @@ _start:
 	int 0x80
 
 	mov byte [eax], 0
-	mov dword [content], eax
-	;;mov dword [eax], eax
+	mov ebx, eax
+
+	mov eax, [content]
+	mov [eax], ebx
 
 	jmp .quit
 .error:
@@ -61,13 +64,18 @@ _start:
 	mov eax, 1
 	mov ebx, msg_nofile
 	int 0x80
-	jmp .quit
+	jmp .silent_quit
 
 .quit:
+	mov eax, 1
+	mov ebx, msg_done
+	int 0x80
+.silent_quit:
 	leave
 	ret
 
 msg_zeroing: db "Zeroing out: ", 0
 msg_nofile: db "No such file or directory", 10, 0
+msg_done: db "Done", 10, 0
 filename: rd 1
 content: rd 1
