@@ -14,10 +14,10 @@ RESET_COLOR = @echo -e -n "\x1b[0m"
 
 all: $(BINS)
 
-build/yhos.img: $(BINS)
+build/yhos.img: $(BINS) $(MAKEGEN_DEPS)
 	$(dir_guard)
 	$(LD_COLOR)
-	i386-elf-ld -w -o build/kernel.bin -Ttext 0x1000 build/kernel_entry.o build/kernel.o build/lowlevel.o build/syscall.o build/keyboard.o build/shell.o build/std.o build/test.o build/yalloc.o --oformat binary
+	i386-elf-ld -w -o build/kernel.bin -Ttext 0x1000 build/kernel_entry.o build/kernel.o build/lowlevel.o build/syscall.o build/keyboard.o build/shell.o build/std.o build/test.o build/yalloc.o $(MAKEGEN_DEPS) --oformat binary
 	$(RESET_COLOR)
 	cat build/boot.bin build/kernel.bin build/void.bin > build/yhos.bin
 	cp build/yhos.bin build/yhos.img

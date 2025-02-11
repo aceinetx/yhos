@@ -18,12 +18,38 @@ if [ ! -f .Makefile ]; then
 fi
 
 # check if kernel/rom.h exists, then the kernel can use it checking for ROM_EXISTS definition
+cflags="CFLAGS = -I. -Werror -Wall -Wextra -DGIT_COMMIT='\"\$(GIT_COMMIT)\"' -DVFS_SIZE=4096"
+romfile=""
+makegen_deps=""
 if [ ! -f kernel/rom.h ]; then
-	echo "CFLAGS = -I. -Werror -Wall -Wextra -DGIT_COMMIT='\"\$(GIT_COMMIT)\"' -DVFS_SIZE=4096" >> Makefile
-	echo "ROMFILE =" >> Makefile
+	cflags="${cflags}"
 else
-	echo "CFLAGS = -I. -Werror -Wall -Wextra -DGIT_COMMIT='\"\$(GIT_COMMIT)\"' -DVFS_SIZE=4096 -DROM_EXISTS" >> Makefile
-	echo "ROMFILE = kernel/rom.h" >> Makefile
+	cflags="${cflags} -DROM_EXISTS"
+	romfile="kernel/rom.h"
 fi
+
+if which dcc >/dev/null; then
+	echo "DC compiler detected, going to use it"
+	cflags="${cflags} -DDCC_EXISTS"
+	makegen_deps="${makegen_deps} build/dc_test.o"
+else
+	echo "DC compiler not detected"
+fi
+
+echo ${cflags} >> Makefile
+echo "ROMFILE = ${romfile}" >> Makefile
+echo "MAKEGEN_DEPS =${makegen_deps}" >> Makefile
 cat .Makefile >> Makefile
+
+if which dcc >/dev/null; then
+	echo "" >> Makefile
+	echo "build/dc_test.o: build/dc_test.ll" >> Makefile
+	echo "	\$(dir_guard)" >> Makefile
+	echo "	llc build/dc_test.ll -o build/dc_test.o -march=x86 -filetype=obj" >> Makefile
+	echo "" >> Makefile
+	echo "build/dc_test.ll: kernel/dc_test.dc" >> Makefile
+	echo "	\$(dir_guard)" >> Makefile
+	echo "	dcc kernel/dc_test.dc -i -o build/dc_test --nostdlib" >> Makefile
+fi
+
 echo "Generated successfully"

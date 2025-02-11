@@ -10,6 +10,8 @@
 #include <kernel/version.h>
 #include <kernel/yalloc.h>
 
+void dc_test();
+
 char help_msg[] = "Available commands: \n"
                   "exit   - halt the system\n"
                   "reboot - reboot the system\n"
@@ -84,6 +86,9 @@ void shell() {
               YHOS_VER_FULL " (https://github.com/aceinetx/yhos)\n\0");
     } else if (strcmp(arg_buf, "test") == 0) {
       kernel_test();
+#if DCC_EXISTS
+      dc_test();
+#endif
     } else if (strcmp(arg_buf, "ls") == 0) {
       ls();
     } else if (strcmp(arg_buf, "cat") == 0) {
