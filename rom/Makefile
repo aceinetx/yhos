@@ -5,6 +5,8 @@
 ##
 dir_guard = @mkdir -p build
 
+all: build/touch build/zero
+
 build/touch: build/touch.o
 	$(dir_guard)
 	i386-elf-ld -o $@ -nostdlib -Ttext=0x1000 --oformat=binary $<
