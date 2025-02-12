@@ -223,7 +223,45 @@ void syscall_handler(regs *r) {
       buf[i] = temp[slen - i];
     }
 
-    // memcpy(buf, temp, buf_size);
+    yfree(temp);
+  } else if (syscall_num == SYS_ITOA16) {
+    dword num = r->ebx;
+    char *buf = (char *)r->ecx;
+    dword buf_size = r->edx;
+
+    dword i = 0;
+
+    for (;;) {
+      if (num == 0 || i >= buf_size) {
+        if (i == 0)
+          memcpy(buf + i, "0\0", 2);
+        break;
+      }
+
+      dword digit = num % 16;
+      num /= 16;
+
+      if (digit < 10) {
+        buf[i] = '0' + digit;
+      } else {
+        buf[i] = 'A' + (digit - 10);
+      }
+      buf[i + 1] = 0; // FIXME: Potential buffer overflow if (i+1 >= buf_size)
+
+      i++;
+    }
+
+    // Reverse the string
+    char *temp = yalloc(buf_size);
+    memcpy(temp, buf, buf_size);
+
+    dword slen = i - 1;
+    for (int j = slen; j >= 0; j--) {
+      if (temp[slen - j] == 0)
+        continue;
+      buf[j] = temp[slen - j];
+    }
+
     yfree(temp);
   }
 }

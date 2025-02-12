@@ -113,10 +113,7 @@ void shell() {
             syscall(SYS_WRITE, buf);
             syscall(SYS_WRITE, "\n");
           } else {
-            syscall(SYS_WRITE, "Executable detected, parsing header\n");
-            // yhse_hdr *header = (yhse_hdr *)buf;
-            syscall(SYS_WRITE, "Entry point address: ");
-            syscall(SYS_WRITEC, '\n');
+            syscall(SYS_WRITE, "(executable file)\n");
           }
         }
       }
