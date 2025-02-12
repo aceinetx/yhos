@@ -71,6 +71,13 @@ _start:
 	mov ebx, msg_done
 	int 0x80
 .silent_quit:
+
+	;; cleanup
+
+	mov eax, SYS_FREE
+	mov ebx, [filename]
+	int 0x80
+
 	leave
 	ret
 

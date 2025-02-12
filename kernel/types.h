@@ -44,7 +44,10 @@ typedef struct {
 
 // yhSE header
 #define YHSE_IDENT 5
+
+#pragma pack(push, 1)
 typedef struct {
-  byte ident[YHSE_IDENT];
+  char ident[YHSE_IDENT];
   dword entry;
 } yhse_hdr;
+#pragma pack(pop)

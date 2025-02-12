@@ -163,14 +163,14 @@ void shell() {
         syscall(SYS_WRITE, "No such file or directory\n");
       } else {
         void *code = (void *)0x40000;
-        yhse_hdr *header = (yhse_hdr *)code;
+        yhse_hdr *header = (yhse_hdr *)0x40000;
 
         syscall(SYS_VFSREAD, arg_buf, code, exe_size);
 
         if (strcmp((char *)header->ident, "YHSE\0") != 0) {
           syscall(SYS_WRITE, "Check failed: not a valid yhSE executable\n");
         } else {
-          entry_t start = *(entry_t *)((dword)code + 0x5);
+          entry_t start = (entry_t)header->entry;
           start();
         }
       }

@@ -37,6 +37,12 @@ _start:
 	mov ebx, [buf]
 	int 0x80
 
+	;; cleanup
+
+	mov eax, SYS_FREE
+	mov ebx, [filename]
+	int 0x80
+
 	leave
 	ret
 
