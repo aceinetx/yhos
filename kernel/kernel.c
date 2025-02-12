@@ -97,6 +97,9 @@ void main() {
   syscall(SYS_WRITE,
           "[...] all checks passed, vfs supports reading & writing\n");
 
+  syscall(SYS_WRITE, buf);
+  syscall(SYS_WRITEC, 10);
+
 #ifdef ROM_EXISTS
   set_rom();
 #endif

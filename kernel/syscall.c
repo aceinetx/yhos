@@ -190,5 +190,40 @@ void syscall_handler(regs *r) {
         }
       }
     }
+  } else if (syscall_num == SYS_ITOA) {
+    dword num = r->ebx;
+    char *buf = (char *)r->ecx;
+    dword buf_size = r->edx;
+
+    dword i = 0;
+
+    for (;;) {
+      if (num == 0 || i >= buf_size) {
+        if (i == 0)
+          memcpy(buf + i, "0\0", 2);
+        break;
+      }
+
+      dword digit = num % 10;
+      num /= 10;
+
+      buf[i] = '0' + digit;
+      buf[i + 1] = 0;
+
+      i++;
+    }
+
+    char *temp = yalloc(buf_size);
+    memcpy(temp, buf, buf_size);
+
+    dword slen = i - 1;
+    for (int i = slen; i >= 0; i--) {
+      if (temp[slen - i] == 0)
+        continue;
+      buf[i] = temp[slen - i];
+    }
+
+    // memcpy(buf, temp, buf_size);
+    yfree(temp);
   }
 }
