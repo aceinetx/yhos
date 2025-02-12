@@ -62,6 +62,7 @@ void syscall_handler(regs *r) {
           set_cursor_pos(pos.x, pos.y);
           c--;
           *c = 0;
+          keyboard_handle_input();
         }
       }
     }
