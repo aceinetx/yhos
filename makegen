@@ -6,8 +6,10 @@
 ##
 set -e
 
-echo "Makefile generator for yhOS"
+echo "generating makefile"
 dcc_found="0"
+
+echo -n "checking for dcc... "
 if which dcc >/dev/null; then
 	dcc_found="1"
 fi
@@ -17,9 +19,54 @@ if [ "$FORCE_DCC" == "1" ]; then
 fi
 
 if [ "$dcc_found" == "1" ]; then
-	echo "DC compiler detected, going to use it"
+	echo "dcc"
+
+	echo -n "checking for llc... "
+	if type llc &> /dev/null; then
+		echo "llc"
+	else
+		echo "none"
+		echo "error: cannot proceed without llc"
+		exit 1
+	fi
 else
-	echo "DC compiler not detected"
+	echo "none"
+fi
+
+echo -n "checking for i386-elf-gcc... "
+if i386-elf-gcc -v &> /dev/null; then
+	echo "i386-elf-gcc"
+else
+	echo "none"
+	echo "error: cannot proceed without i386-elf-gcc"
+	exit 1
+fi
+
+echo -n "checking for i386-elf-ld... "
+if i386-elf-ld -v &> /dev/null; then
+	echo "i386-elf-ld"
+else
+	echo "none"
+	echo "error: cannot proceed without i386-elf-ld"
+	exit 1
+fi
+
+echo -n "checking for nasm... "
+if nasm -v &> /dev/null; then
+	echo "nasm"
+else
+	echo "none"
+	echo "error: cannot proceed without nasm"
+	exit 1
+fi
+
+echo -n "checking for fasm... "
+if type fasm &> /dev/null; then
+	echo "fasm"
+else
+	echo "none"
+	echo "error: cannot proceed without fasm"
+	exit 1
 fi
 
 if [ -f Makefile ]; then
@@ -27,19 +74,22 @@ if [ -f Makefile ]; then
 fi
 
 if [ ! -f .Makefile ]; then
-	echo "Makefile template does not exist. Cannot continue"
-	exit
+	echo "makefile template does not exist. cannot continue"
+	exit 1
 fi
 
 # check if kernel/rom.h exists, then the kernel can use it checking for ROM_EXISTS definition
 cflags="CFLAGS = -I. -Werror -Wall -Wextra -DGIT_COMMIT='\"\$(GIT_COMMIT)\"' -DVFS_SIZE=4096"
 romfile=""
 makegen_deps=""
+echo -n "checking for kernel/rom.h... "
 if [ ! -f kernel/rom.h ]; then
 	cflags="${cflags}"
+	echo "none"
 else
 	cflags="${cflags} -DROM_EXISTS"
 	romfile="kernel/rom.h"
+	echo "kernel/rom.h"
 fi
 
 if [ "$dcc_found" == "1" ]; then
@@ -69,4 +119,4 @@ if [ "$dcc_found" == "1" ]; then
 	echo "	\$(RESET_COLOR)" >> Makefile
 fi
 
-echo "Generated successfully"
+echo "generated successfully"

@@ -4,13 +4,7 @@
 ;; License: GPL-2.0
 ;;
 
-format ELF
-org 0x40000
-
-;; yhse header begin
-db "YHSE", 0
-dd _start
-;; yhse header end
+include 'yhos.inc'
 
 public _start
 _start:
@@ -18,13 +12,13 @@ _start:
 	mov ebp, esp
 
 	;; get file name (eax)
-	mov eax, 9
+	mov eax, SYS_EXEARG
 	int 0x80
 
 	mov [filename], eax
 
 	;; allocate empty buffer
-	mov eax, 6
+	mov eax, SYS_ALLOC
 	mov ebx, 1
 	int 0x80
 
@@ -32,14 +26,14 @@ _start:
 	mov byte [eax], 0
 
 	;; write
-	mov eax, 3
+	mov eax, SYS_VFSWRITE
 	mov ebx, [filename]
 	mov ecx, [buf]
 	mov edx, 1
 	int 0x80
 
 	;; free buffer as write syscall allocates it one more time
-	mov eax, 7
+	mov eax, SYS_FREE
 	mov ebx, [buf]
 	int 0x80
 

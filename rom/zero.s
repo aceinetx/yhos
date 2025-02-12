@@ -4,13 +4,7 @@
 ;; License: GPL-2.0
 ;;
 
-format ELF
-org 0x40000
-
-;; yhse header begin
-db "YHSE", 0
-dd _start
-;; yhse header end
+include 'yhos.inc'
 
 public _start
 _start:
@@ -18,26 +12,26 @@ _start:
 	mov ebp, esp
 
 	;; get file name (eax)
-	mov eax, 9
+	mov eax, SYS_EXEARG
 	int 0x80
 
 	mov [filename], eax
 
 	;; print zeroing out
-	mov eax, 1
+	mov eax, SYS_WRITE
 	mov ebx, msg_zeroing
 	int 0x80
 
-	mov eax, 1
+	mov eax, SYS_WRITE
 	mov ebx, [filename]
 	int 0x80
 
-	mov eax, 0
+	mov eax, SYS_WRITEC
 	mov ebx, 10
 	int 0x80
 
 	;; get file address
-	mov eax, 10
+	mov eax, SYS_VFSHANDLE
 	mov ebx, [filename]
 	int 0x80
 
@@ -48,13 +42,13 @@ _start:
 	mov [content], eax
 
 	;; free the file content
-	mov eax, 7
+	mov eax, SYS_FREE
 	mov ebx, [content]
 	mov ebx, [ebx]
 	int 0x80
 
 	;; allocate a new file content with a single zero
-	mov eax, 6
+	mov eax, SYS_ALLOC
 	mov ebx, 1
 	int 0x80
 
@@ -67,7 +61,7 @@ _start:
 	jmp .quit
 .error:
 	;; print no such file
-	mov eax, 1
+	mov eax, SYS_WRITE
 	mov ebx, msg_nofile
 	int 0x80
 	jmp .silent_quit

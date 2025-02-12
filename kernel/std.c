@@ -3,6 +3,13 @@
  * Copyright (c) aceinet
  * License: GPL-2.0
  */
+
+/*
+ * yhOS Standard library
+ * This is made without any external dependencies, as it was made to be used
+ * with assembly executables
+ */
+
 #include <kernel/std.h>
 
 int strcmp(char *p1, char *p2) {

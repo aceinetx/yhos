@@ -1,3 +1,9 @@
+"
+  yhOS
+  Copyright (c) aceinet
+  License: GPL-2.0
+"
+
 extern i32 do_syscall i32 i32 i32 i32;
 
 context #nomangle dc_test -> void;

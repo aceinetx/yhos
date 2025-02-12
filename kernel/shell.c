@@ -11,7 +11,9 @@
 #include <kernel/version.h>
 #include <kernel/yalloc.h>
 
+#ifdef DCC_EXISTS
 void dc_test();
+#endif
 
 char help_msg[] = "Available commands: \n"
                   "exit   - halt the system\n"
@@ -168,7 +170,7 @@ void shell() {
         if (strcmp((char *)header->ident, "YHSE\0") != 0) {
           syscall(SYS_WRITE, "Check failed: not a valid yhSE executable\n");
         } else {
-          entry_t start = (entry_t)((dword)code + 0x5);
+          entry_t start = *(entry_t *)((dword)code + 0x5);
           start();
         }
       }

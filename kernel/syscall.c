@@ -115,6 +115,7 @@ void syscall_handler(regs *r) {
           memcpy(new_content, buf, buf_size);
           yfree(file->content);
           file->content = new_content;
+          file->size = buf_size;
 
           r->eax = (dword)file;
           break;
@@ -214,15 +215,6 @@ void syscall_handler(regs *r) {
         }
       }
     }
-
-    if (r->eax == (dword)-1) {
-      if (filename[0] != '/') {
-        char fbuf[255];
-        strncpy(fbuf, cwd, 255);
-        strncpy(fbuf + strlen(cwd), filename, 255);
-        r->eax = syscall(SYS_VFSQUERY, fbuf);
-      }
-    }
   } else if (syscall_num == SYS_ALLOC) {
     r->eax = (dword)yalloc(r->ebx);
   } else if (syscall_num == SYS_FREE) {
@@ -231,7 +223,8 @@ void syscall_handler(regs *r) {
     r->eax = (dword)vfs;
   } else if (syscall_num == SYS_EXEARG) {
     nextarg();
-    r->eax = (dword)arg_buf;
+    r->eax = (dword)yalloc(SHELL_CONST1);
+    memcpy((void *)r->eax, arg_buf, SHELL_CONST1);
   } else if (syscall_num == SYS_VFSHANDLE) {
     char *_filename = (char *)r->ebx;
     dword filename_size = strlen(_filename);
