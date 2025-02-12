@@ -166,7 +166,7 @@ keyboard_result keyboard_handle_input() {
     return res;
   }
   if (input == 0x34) { // Period
-    res.ch = '.';
+    res.ch = shift_pressed ? '/' : '.';
     return res;
   }
 

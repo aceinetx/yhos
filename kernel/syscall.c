@@ -12,6 +12,7 @@
 
 vfs_file *vfs;
 dword vfs_size;
+char cwd[PATH_LIMIT];
 
 dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
   asm volatile("int $0x80" : : "a"(eax), "b"(ebx), "c"(ecx), "d"(edx));
@@ -67,11 +68,23 @@ void syscall_handler(regs *r) {
       }
     }
   } else if (syscall_num == SYS_VFSWRITE) {
-    char *filename = (char *)r->ebx;
+    char *_filename = (char *)r->ebx;
     char *buf = (char *)r->ecx;
-    dword filename_size = strlen(filename);
+    dword filename_size = strlen(_filename);
     dword buf_size = r->edx;
     r->eax = 0;
+
+    dword cwd_size = strlen(cwd);
+    char filename[filename_size + cwd_size + 1];
+    if (_filename[0] != '/') {
+
+      strncpy(filename, cwd, cwd_size);
+      strncpy(filename + cwd_size, _filename, filename_size + 1);
+
+      filename_size += cwd_size;
+    } else {
+      strncpy(filename, _filename, filename_size + 1);
+    }
 
     if (vfs == NULL) {
       vfs = yalloc(sizeof(vfs_file));
@@ -131,11 +144,33 @@ void syscall_handler(regs *r) {
         vfs_size++;
       }
     }
+
+    if (r->eax == 0) {
+      if (filename[0] != '/') {
+        char fbuf[255];
+        strncpy(fbuf, cwd, 255);
+        strncpy(fbuf + strlen(cwd), filename, 255);
+        r->eax = syscall(SYS_VFSWRITE, fbuf, buf, buf_size);
+      }
+    }
   } else if (syscall_num == SYS_VFSREAD) {
-    char *filename = (char *)r->ebx;
+    char *_filename = (char *)r->ebx;
     char *buf = (char *)r->ecx;
     dword buf_size = r->edx;
+    dword filename_size = strlen(_filename);
     r->eax = 0;
+
+    dword cwd_size = strlen(cwd);
+    char filename[filename_size + cwd_size + 1];
+    if (_filename[0] != '/') {
+
+      strncpy(filename, cwd, cwd_size);
+      strncpy(filename + cwd_size, _filename, filename_size + 1);
+
+      filename_size += cwd_size;
+    } else {
+      strncpy(filename, _filename, filename_size + 1);
+    }
 
     if (vfs != NULL) {
       for (dword i = 0; i < vfs_size; i++) {
@@ -151,8 +186,21 @@ void syscall_handler(regs *r) {
       }
     }
   } else if (syscall_num == SYS_VFSQUERY) {
-    char *filename = (char *)r->ebx;
+    char *_filename = (char *)r->ebx;
+    dword filename_size = strlen(_filename);
     r->eax = -1;
+
+    dword cwd_size = strlen(cwd);
+    char filename[filename_size + cwd_size + 1];
+    if (_filename[0] != '/') {
+
+      strncpy(filename, cwd, cwd_size);
+      strncpy(filename + cwd_size, _filename, filename_size + 1);
+
+      filename_size += cwd_size;
+    } else {
+      strncpy(filename, _filename, filename_size + 1);
+    }
 
     if (vfs != NULL) {
       for (dword i = 0; i < vfs_size; i++) {
@@ -166,6 +214,15 @@ void syscall_handler(regs *r) {
         }
       }
     }
+
+    if (r->eax == (dword)-1) {
+      if (filename[0] != '/') {
+        char fbuf[255];
+        strncpy(fbuf, cwd, 255);
+        strncpy(fbuf + strlen(cwd), filename, 255);
+        r->eax = syscall(SYS_VFSQUERY, fbuf);
+      }
+    }
   } else if (syscall_num == SYS_ALLOC) {
     r->eax = (dword)yalloc(r->ebx);
   } else if (syscall_num == SYS_FREE) {
@@ -176,8 +233,21 @@ void syscall_handler(regs *r) {
     nextarg();
     r->eax = (dword)arg_buf;
   } else if (syscall_num == SYS_VFSHANDLE) {
-    char *filename = (char *)r->ebx;
+    char *_filename = (char *)r->ebx;
+    dword filename_size = strlen(_filename);
     r->eax = 0;
+
+    dword cwd_size = strlen(cwd);
+    char filename[filename_size + cwd_size + 1];
+    if (_filename[0] != '/') {
+
+      strncpy(filename, cwd, cwd_size);
+      strncpy(filename + cwd_size, _filename, filename_size + 1);
+
+      filename_size += cwd_size;
+    } else {
+      strncpy(filename, _filename, filename_size + 1);
+    }
 
     if (vfs != NULL) {
       for (dword i = 0; i < vfs_size; i++) {
@@ -264,5 +334,7 @@ void syscall_handler(regs *r) {
     }
 
     yfree(temp);
+  } else if (syscall_num == SYS_GETCWD) {
+    r->eax = (dword)cwd;
   }
 }

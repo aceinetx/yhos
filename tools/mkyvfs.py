@@ -34,7 +34,7 @@ for _filename in sys.argv[1::]:
             cgen = cgen[:-1]
 
         cgen += ", 0x0};\n"
-        cgen += f"syscall(SYS_VFSWRITE, \"{filename}\", dat{filename_i}, sizeof(dat{filename_i}));\n"
+        cgen += f"syscall(SYS_VFSWRITE, \"/{filename}\", dat{filename_i}, sizeof(dat{filename_i}));\n"
 
         filename_i += 1
         pass

@@ -11,6 +11,10 @@
 #define NULL ((void *)0)
 #endif
 
+#ifndef __cplusplus
+typedef enum { false = 0, true = 1, undef = 0xFFFFFFFF } bool;
+#endif
+
 typedef uint8_t byte;
 typedef uint16_t word;
 typedef uint32_t dword;

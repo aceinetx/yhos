@@ -80,6 +80,7 @@ void main() {
   syscall(SYS_WRITE, "[...] mem reset\n");
   init_allocator((void *)0x200000, 0x200000);
   vfs = NULL;
+  strncpy(cwd, "/", PATH_LIMIT);
 
   syscall(SYS_WRITE, "[...] testing vfs\n");
 

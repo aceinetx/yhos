@@ -19,6 +19,9 @@
 #define SYS_VFSHANDLE 10
 #define SYS_ITOA 11
 #define SYS_ITOA16 12
+#define SYS_GETCWD 13
+
+#define PATH_LIMIT 255
 
 #define vrg_cnt(vrg1, vrg2, vrg3, vrg4, vrg5, vrg6, vrg7, vrg8, vrgN, ...) vrgN
 #define vrg_argn(...) vrg_cnt(__VA_ARGS__, 8, 7, 6, 5, 4, 3, 2, 1, 0)
@@ -37,6 +40,7 @@
 
 extern vfs_file *vfs;
 extern dword vfs_size;
+extern char cwd[PATH_LIMIT];
 
 dword do_syscall(dword eax, dword ebx, dword ecx, dword edx);
 void syscall_handler(regs *r);
