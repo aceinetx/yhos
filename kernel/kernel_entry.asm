@@ -34,6 +34,7 @@ isr80_handler:
     call syscall_handler
     add esp, 4
     popa
+
     iret
 
 section .data
