@@ -89,7 +89,6 @@ void nextarg() {
 }
 
 void shell() {
-  strncpy(cwd, "/", SHELL_CONST1);
   default_arrow();
   for (;;) {
     syscall(SYS_WRITE, arrow);
@@ -109,9 +108,6 @@ void shell() {
         good = inb(0x64);
       outb(0x64, 0xFE);
       asm volatile("hlt\n");
-      /*asm volatile(
-          ".intel_syntax noprefix\nmov ebx, 0\ndiv ebx\n.att_syntax
-         prefix\n");*/
     } else if (strcmp(arg_buf, "help") == 0) {
       syscall(SYS_WRITE, help_msg);
     } else if (strcmp(arg_buf, "ver") == 0) {

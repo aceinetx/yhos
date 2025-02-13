@@ -317,6 +317,7 @@ void syscall_handler(regs *r) {
 
     // Reverse the string
     char *temp = yalloc(buf_size);
+
     memcpy(temp, buf, buf_size);
 
     dword slen = i - 1;
