@@ -16,53 +16,64 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Cache i386-elf toolchain
+      id: toolchain-cache
+      uses: actions/cache@v3
+      with:
+        # Caches the directory where the toolchain is installed
+        path: ${{ runner.home }}/i386-elf
+        key: ${{ runner.os }}-i386-elf-toolchain-v2.37-gcc-11.2.0
+
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo libexpat-dev nasm
-        sudo apt-get install -y llvm
+        sudo apt-get install -y build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo libexpat-dev nasm llvm
         llc --version
 
     - name: Download/build i386-elf toolchain and fasm
+      if: steps.toolchain-cache.outputs.cache-hit != 'true'
       run: |
-        # Download and extract the i386-elf toolchain source
-        wget https://ftp.gnu.org/gnu/binutils/binutils-2.37.tar.xz
+        # Create installation directories
+        mkdir -p $HOME/i386-elf $HOME/bin
+
+        # Download sources for binutils and gcc
+        wget -q https://ftp.gnu.org/gnu/binutils/binutils-2.37.tar.xz
         tar -xf binutils-2.37.tar.xz
-        wget https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
+        wget -q https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
         tar -xf gcc-11.2.0.tar.xz
 
         # Build binutils
-        mkdir build-binutils
-        cd build-binutils
-        ../binutils-2.37/configure --target=i386-elf --prefix=/usr/local/i386-elf --disable-nls --disable-werror
+        mkdir build-binutils && cd build-binutils
+        ../binutils-2.37/configure --target=i386-elf --prefix=$HOME/i386-elf --disable-nls --disable-werror
         make -j$(nproc)
-        sudo make install
+        make install
         cd ..
 
-        # Build GCC
-        mkdir build-gcc
-        cd build-gcc
-        ../gcc-11.2.0/configure --target=i386-elf --prefix=/usr/local/i386-elf --disable-nls --enable-languages=c,c++ --without-headers
+        # Build GCC (only the compiler, not the full suite)
+        mkdir build-gcc && cd build-gcc
+        ../gcc-11.2.0/configure --target=i386-elf --prefix=$HOME/i386-elf --disable-nls --enable-languages=c,c++ --without-headers
         make -j$(nproc) all-gcc
-        sudo make install-gcc
+        make install-gcc
         cd ..
 
-        # Download fasm
-        wget https://flatassembler.net/fasm-1.73.32.tgz
+        # Download and install fasm
+        wget -q https://flatassembler.net/fasm-1.73.32.tgz
         tar -xf fasm-1.73.32.tgz
         cd fasm
-        sudo mv fasm /usr/bin
+        mv fasm $HOME/bin/
         cd ..
 
-    - name: Build
+    - name: Build yhos
       run: |
-
-        # Download DCC
-        wget https://github.com/dc-lang/dc/releases/download/nightly-release/dcc-x86_64
-        mv ./dcc-x86_64 ./dcc
+        # Download DCC binary
+        wget -q https://github.com/dc-lang/dc/releases/download/nightly-release/dcc-x86_64
+        mv dcc-x86_64 dcc
         chmod +x dcc
-        export PATH="/usr/local/i386-elf/bin:$PATH:$(pwd)"
 
+        # Update PATH to include our custom toolchain and fasm
+        export PATH="$HOME/i386-elf/bin:$HOME/bin:$(pwd):$PATH"
+
+        # Build the project (using your script)
         FORCE_DCC=1 ./buildall.sh
       
     - name: Upload artifact
