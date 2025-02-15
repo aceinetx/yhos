@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+##
+## yhOS
+## Copyright (c) aceinet
+## License: GPL-2.0
+##
+dir=$(dirname -- "$0")
+i386-elf-gcc $@ -ffreestanding -m32 -nostdlib -m32

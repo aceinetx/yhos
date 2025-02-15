@@ -13,17 +13,7 @@ LD_COLOR = @echo -e -n "\x1b[38;5;103m"
 DCC_COLOR = @echo -e -n "\x1b[38;5;207m"
 RESET_COLOR = @echo -e -n "\x1b[0m"
 
-all: build/yhos.img build/i386-yhse-ld build/i386-yhse-gcc
-
-build/i386-yhse-ld: yhse/i386-yhse-ld.c
-	$(GCC_COLOR)
-	cc -o $@ $< -DSOURCE_PATH='"$(shell pwd)/yhse"'
-	$(RESET_COLOR)
-
-build/i386-yhse-gcc: yhse/i386-yhse-gcc.c
-	$(GCC_COLOR)
-	cc -o $@ $< -DSOURCE_PATH='"$(shell pwd)/yhse"'
-	$(RESET_COLOR)
+all: build/yhos.img
 
 build/yhos.img: $(BINS) $(MAKEGEN_DEPS)
 	$(dir_guard)
