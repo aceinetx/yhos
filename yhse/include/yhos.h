@@ -10,6 +10,7 @@
 
 #include <kernel/types.h>
 
+#ifndef YHSE_NOLIB
 dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
   asm volatile("int $0x80" : : "a"(eax), "b"(ebx), "c"(ecx), "d"(edx));
   asm volatile("push %eax\n");
@@ -17,6 +18,8 @@ dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
   asm volatile("pop %0\n" : "=a"(ret));
   return ret;
 }
+#endif
+
 #define vrg_cnt(vrg1, vrg2, vrg3, vrg4, vrg5, vrg6, vrg7, vrg8, vrgN, ...) vrgN
 #define vrg_argn(...) vrg_cnt(__VA_ARGS__, 8, 7, 6, 5, 4, 3, 2, 1, 0)
 #define vrg_cat0(x, y) x##y
@@ -48,13 +51,10 @@ dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
 #define SYS_GETCWD 13
 #define SYS_GETC 14
 
-void print(char *buf) { syscall(SYS_WRITE, buf); }
-#ifdef __cplusplus
-void print(const char *buf) { syscall(SYS_WRITE, buf); }
-#endif
+#define print(buf) syscall(SYS_WRITE, buf)
+#define printc(c) syscall(SYS_WRITEC, c)
 
-void printc(char c) { syscall(SYS_WRITEC, c); }
-
+#ifndef YHSE_NOLIB
 int strcmp(char *p1, char *p2) {
   char *s1 = (char *)p1;
   char *s2 = (char *)p2;
@@ -109,6 +109,7 @@ char *strncpy(char *s1, char *s2, dword n) {
     memset(s1 + size, '\0', n - size);
   return (char *)memcpy((void *)s1, (void *)s2, size);
 }
+#endif
 
 #define _start int _start
 

@@ -107,6 +107,6 @@ install:
 	cp yhse/i386-yhse-* ~/.local/i386-yhse/toolchain
 	cp yhse/*.ld ~/.local/i386-yhse/toolchain
 	cp yhse/include ~/.local/i386-yhse/toolchain -r
-	cp kernel/*.h ~/.local/i386-yhse/kernel
+	cp kernel/types.h ~/.local/i386-yhse/kernel
 	@echo
 	@echo "i386-yhse toolchain installed to ~/.local/i386-yhse"

@@ -16,4 +16,4 @@ Make sure you have qemu-system-i386 installed
 ./run.sh
 ```
 ## Makefile usage
-You should sometimes use ./make and not make since ./make also rebuilds the makefile
+You should sometimes use ./ymake and not make since ./ymake also rebuilds the makefile
