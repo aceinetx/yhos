@@ -333,5 +333,14 @@ void syscall_handler(regs *r) {
   } else if (syscall_num == SYS_GETC) {
     keyboard_result kc = keyboard_handle_input();
     r->eax = (dword)kc.ch;
+  } else if (syscall_num == SYS_STOI) {
+    char *s = (char *)r->ebx;
+    r->eax = 0;
+
+    while (*s != 0) {
+      r->eax *= 10;
+      r->eax += *s - '0';
+      s++;
+    }
   }
 }
