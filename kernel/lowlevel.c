@@ -60,7 +60,7 @@ void vga_putc(char c) {
     goto vga_putc_newlend;
   }
 
-  VGA_BUFFER[pos.y * 80 + pos.x] = (word)c | 0x0F00;
+  VGA_BUFFER[pos.y * 80 + pos.x] = (word)c | 0x0700;
   pos.x++;
   if (pos.x > VGA_WIDTH) {
     goto vga_putc_newlend;
