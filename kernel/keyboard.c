@@ -19,14 +19,14 @@ keyboard_result keyboard_handle_input() {
   // Static variable to track the shift state.
   static int shift_pressed = 0;
 
-  uint8_t input = keyboard_read_input();
+  byte input = keyboard_read_input();
   keyboard_result res;
   // Default: mark result as not valid.
   res.is_valid = 0;
 
   // First, check if this is a key release event.
   if (input & 0x80) {
-    uint8_t key_released = input & 0x7F; // Mask out the high bit.
+    byte key_released = input & 0x7F; // Mask out the high bit.
     if (key_released == 0x2A || key_released == 0x36) {
       // Shift key released.
       shift_pressed = 0;
