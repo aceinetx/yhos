@@ -10,6 +10,7 @@
 #define VGA_HEIGHT 25
 
 void outb(word port, byte value);
+void outw(word port, word value);
 byte inb(word port);
 void vga_scroll();
 void set_cursor_pos(word x, word y);

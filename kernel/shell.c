@@ -16,15 +16,16 @@ void dc_test();
 #endif
 
 char help_msg[] = "Available commands: \n"
-                  "exit   - halt the system\n"
-                  "reboot - reboot the system\n"
-                  "help   - print this message\n"
-                  "ver    - print yhOS version\n"
-                  "test   - do a test\n"
-                  "ls     - list files in current working directory\n"
-                  "cat    - print contents of a file\n"
-                  "run    - run a executable\n"
-                  "clear  - clear the screen\n";
+                  "exit     - halt the system\n"
+                  "reboot   - reboot the system\n"
+                  "help     - print this message\n"
+                  "ver      - print yhOS version\n"
+                  "test     - do a test\n"
+                  "ls       - list files in current working directory\n"
+                  "cat      - print contents of a file\n"
+                  "run      - run a executable\n"
+                  "clear    - clear the screen\n"
+                  "shutdown - shutdown the system\n";
 
 void kernel_test();
 
@@ -194,6 +195,11 @@ void shell() {
           }
         }
       }
+    } else if (strcmp(arg_buf, "shutdown") == 0) {
+      outw(0xB004, 0x2000);
+      outw(0x604, 0x2000);
+      outw(0x4004, 0x3400);
+      outw(0x600, 0x34);
     } else {
       if (cmd[0] != '\0') {
         syscall(SYS_WRITE, "(no match)\n");
