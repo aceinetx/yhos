@@ -26,8 +26,8 @@ build/yhos.img: $(BINS) $(MAKEGEN_DEPS)
 	$(LD_COLOR)
 	$(LD) -o build/kernel.bin -Ttext 0x1000 build/kernel_entry.o build/kernel.o build/lowlevel.o build/syscall.o build/keyboard.o build/shell.o build/std.o build/test.o build/yalloc.o $(MAKEGEN_DEPS) --oformat binary
 	$(RESET_COLOR)
-	@cat build/boot.bin build/kernel.bin build/void.bin > build/yhos.bin
-	@cp build/yhos.bin build/yhos.img
+	@cat build/boot.bin build/kernel.bin build/void.bin > build/yhos.img
+	# @cp build/yhos.bin build/yhos.img
 
 build/kernel_entry.o: kernel/kernel_entry.asm
 	$(dir_guard)
@@ -97,3 +97,16 @@ build/boot.bin: asm/boot.asm
 
 clean:
 	rm -rf build rom/build kernel/rom.h
+
+install:
+	rm -rf ~/.local/i386-yhse
+	mkdir -p ~/.local
+	mkdir -p ~/.local/i386-yhse
+	mkdir -p ~/.local/i386-yhse/toolchain
+	mkdir -p ~/.local/i386-yhse/kernel
+	cp yhse/i386-yhse-* ~/.local/i386-yhse/toolchain
+	cp yhse/*.ld ~/.local/i386-yhse/toolchain
+	cp yhse/include ~/.local/i386-yhse/toolchain -r
+	cp kernel/*.h ~/.local/i386-yhse/kernel
+	@echo
+	@echo "i386-yhse toolchain installed to ~/.local/i386-yhse"

@@ -25,7 +25,7 @@ void main() {
   syscall(SYS_WRITE, "[...] mem reset\n");
   init_allocator((void *)0x200000, 0x200000); // Init memory allocator
   vfs = NULL;                                 // Reset VFS
-  strncpy(cwd, "/", PATH_LIMIT);              // Set currern working directory
+  strncpy(cwd, "/", PATH_LIMIT);              // Set current working directory
 
 #ifdef ROM_EXISTS
   set_rom();

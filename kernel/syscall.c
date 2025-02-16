@@ -330,5 +330,8 @@ void syscall_handler(regs *r) {
     yfree(temp);
   } else if (syscall_num == SYS_GETCWD) {
     r->eax = (dword)cwd;
+  } else if (syscall_num == SYS_GETC) {
+    keyboard_result kc = keyboard_handle_input();
+    r->eax = (dword)kc.ch;
   }
 }

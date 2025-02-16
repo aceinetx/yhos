@@ -16,10 +16,10 @@
 OUTPUT_FORMAT("binary")
 ENTRY(_start)
 
+yhse_load_start = 0x40000;
 SECTIONS
 {
-    /* Load address set to 0x40000 as per your OS's loader */
-    . = 0x40000;
+    . = yhse_load_start;
 
     /* Header section with magic and entry point */
     .header : {
@@ -30,7 +30,7 @@ SECTIONS
         BYTE(0x45); /* 'E' */
         BYTE(0x00); /* Null terminator */
 
-        /* Entry point address (4 bytes) */
+				LONG(yhse_load_start);
         LONG(_start); /* _start's VMA will be after the header */
     }
 

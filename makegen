@@ -42,6 +42,15 @@ else
 	exit 1
 fi
 
+echo -n "checking for i386-elf-g++... "
+if i386-elf-g++ -v &> /dev/null; then
+	echo "i386-elf-g++"
+else
+	echo "none"
+	echo "warning: you can proceed without i386-elf-g++, but you probably wouldn't be able to compile the ROM"
+	exit 1
+fi
+
 echo -n "checking for i386-elf-ld... "
 if i386-elf-ld -v &> /dev/null; then
 	echo "i386-elf-ld"

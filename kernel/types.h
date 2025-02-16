@@ -46,6 +46,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
   char ident[YHSE_IDENT];
+  dword load_addr;
   dword entry;
 } yhse_hdr;
 #pragma pack(pop)

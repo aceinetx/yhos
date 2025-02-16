@@ -21,6 +21,16 @@ _start() {
   syscall(SYS_WRITE, filename);
   syscall(SYS_WRITE, ": yhSE executable (yhOS Static Executable)\n");
 
+  syscall(SYS_WRITE, "Load address: ");
+
+  {
+    char h[16];
+    syscall(SYS_ITOA16, header->load_addr, h, sizeof(h));
+    syscall(SYS_WRITE, "0x");
+    syscall(SYS_WRITE, h);
+    syscall(SYS_WRITEC, '\n');
+  }
+
   syscall(SYS_WRITE, "Entry point address: ");
 
   {

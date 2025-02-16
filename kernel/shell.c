@@ -80,12 +80,16 @@ void nextarg() {
   memset(arg_buf, 0, SHELL_CONST1);
   int i = 0;
 
+  if (*arg_p == 0)
+    return;
+
   while (*arg_p != 0 && *arg_p != ' ') {
     arg_buf[i] = cmd[arg_p - cmd];
     i++;
     arg_p++;
   }
-  arg_p++;
+  if (*arg_p != 0)
+    arg_p++;
 }
 
 vgavec2 initial_pos;
@@ -171,6 +175,9 @@ void shell() {
         void *code = (void *)0x40000;
         yhse_hdr *header = (yhse_hdr *)0x40000;
 
+        syscall(SYS_VFSREAD, arg_buf, code, exe_size);
+        code = (void *)header->load_addr;
+        header = (void *)header->load_addr;
         syscall(SYS_VFSREAD, arg_buf, code, exe_size);
 
         if (strcmp((char *)header->ident, "YHSE\0") != 0) {

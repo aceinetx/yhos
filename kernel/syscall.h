@@ -20,6 +20,7 @@
 #define SYS_ITOA 11
 #define SYS_ITOA16 12
 #define SYS_GETCWD 13
+#define SYS_GETC 14
 
 #define PATH_LIMIT 255
 

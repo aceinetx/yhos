@@ -46,6 +46,7 @@ dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
 #define SYS_ITOA 11
 #define SYS_ITOA16 12
 #define SYS_GETCWD 13
+#define SYS_GETC 14
 
 void print(char *buf) { syscall(SYS_WRITE, buf); }
 #ifdef __cplusplus
