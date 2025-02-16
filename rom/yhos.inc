@@ -6,8 +6,8 @@
 format ELF
 
 ;; yhse header begin
-db "YHSE", 0
-dd _start
+;; db "YHSE", 0
+;; dd _start
 ;; yhse header end
 
 SYS_WRITEC = 0

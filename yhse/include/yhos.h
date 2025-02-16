@@ -5,8 +5,8 @@
  */
 // This file must be included at the very top of the code
 #pragma once
-asm(".string \"YHSE\"");
-asm(".long _start");
+// asm(".string \"YHSE\"");
+// asm(".long _start");
 
 #include <kernel/types.h>
 

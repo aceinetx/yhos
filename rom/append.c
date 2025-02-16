@@ -1,4 +1,4 @@
-#include "yhos.h"
+#include <yhos.h>
 
 void _start() {
   char *filename = (char *)syscall(SYS_EXEARG);

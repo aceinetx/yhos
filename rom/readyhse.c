@@ -1,4 +1,4 @@
-#include "yhos.h"
+#include <yhos.h>
 
 void _start() {
   char *filename = (char *)syscall(SYS_EXEARG);
@@ -20,7 +20,8 @@ void _start() {
 
   syscall(SYS_WRITE, filename);
   syscall(SYS_WRITE, ": yhSE executable (yhOS Static Executable)\n");
-  syscall(SYS_WRITE, "Entry point: ");
+
+  syscall(SYS_WRITE, "Entry point address: ");
 
   {
     char h[16];

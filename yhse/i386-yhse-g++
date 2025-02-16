@@ -6,4 +6,4 @@
 ##
 echo -e "\x1b[1mi386-yhse-g++\x1b[0m: toolchain by aceinet for yhOS"
 dir=$(dirname -- "$0")
-i386-elf-g++ $@ -ffreestanding -m32 -nostdlib -m32
+i386-elf-g++ $@ -ffreestanding -m32 -nostdlib -m32 -I${dir}/include

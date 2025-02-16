@@ -5,7 +5,7 @@
 ##
 dir_guard = @mkdir -p build
 text_start = 0x40000
-CFLAGS = -I.. -Wall -Werror
+CFLAGS = -I.. -Wall -Werror -I../yhse/include
 LD = ../yhse/i386-yhse-ld
 CC = ../yhse/i386-yhse-gcc
 
@@ -16,18 +16,20 @@ build/append: build/append.o
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
 	$(LD) -o $@ $<
 
-build/append.o: append.c yhos.h
+build/append.o: append.c
 	$(dir_guard)
-	i386-elf-gcc -o $@ -c -m32 -ffreestanding $< $(CFLAGS)
+	# i386-elf-gcc -o $@ -c -m32 -ffreestanding $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 build/readyhse: build/readyhse.o
 	$(dir_guard)
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
 	$(LD) -o $@ $<
 
-build/readyhse.o: readyhse.c yhos.h
+build/readyhse.o: readyhse.c
 	$(dir_guard)
-	i386-elf-gcc -o $@ -c -m32 -ffreestanding $< $(CFLAGS)
+	# i386-elf-gcc -o $@ -c -m32 -ffreestanding $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 build/touch: build/touch.o
 	$(dir_guard)
