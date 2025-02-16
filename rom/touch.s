@@ -43,6 +43,7 @@ _start:
 	mov ebx, [filename]
 	int 0x80
 
+	mov eax, 0
 	leave
 	ret
 

@@ -47,6 +47,11 @@ dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
 #define SYS_ITOA16 12
 #define SYS_GETCWD 13
 
+void print(char *buf) { syscall(SYS_WRITE, buf); }
+#ifdef __cplusplus
+void print(const char *buf) { syscall(SYS_WRITE, buf); }
+#endif
+
 int strcmp(char *p1, char *p2) {
   char *s1 = (char *)p1;
   char *s2 = (char *)p2;
@@ -63,8 +68,8 @@ int strcmp(char *p1, char *p2) {
 }
 
 void *memcpy(void *dest, void *src, dword len) {
-  char *d = dest;
-  char *s = src;
+  char *d = (char *)dest;
+  char *s = (char *)src;
   while (len--)
     *d++ = *s++;
   return dest;
@@ -99,5 +104,5 @@ char *strncpy(char *s1, char *s2, dword n) {
   dword size = strnlen(s2, n);
   if (size != n)
     memset(s1 + size, '\0', n - size);
-  return memcpy(s1, s2, size);
+  return (char *)memcpy((void *)s1, (void *)s2, size);
 }

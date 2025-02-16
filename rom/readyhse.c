@@ -1,12 +1,12 @@
 #include <yhos.h>
 
-void _start() {
+int _start() {
   char *filename = (char *)syscall(SYS_EXEARG);
 
   dword size = syscall(SYS_VFSQUERY, filename);
   if (size == -1) {
     syscall(SYS_WRITE, "No such file or directory\n");
-    return;
+    return 1;
   }
 
   char *buf = (char *)syscall(SYS_ALLOC, size);
@@ -15,7 +15,7 @@ void _start() {
   yhse_hdr *header = (yhse_hdr *)buf;
   if (strcmp(header->ident, "YHSE") != 0) {
     syscall(SYS_WRITE, "Not a executable\n");
-    return;
+    return 1;
   }
 
   syscall(SYS_WRITE, filename);
@@ -32,5 +32,5 @@ void _start() {
   }
 
   syscall(SYS_FREE, filename);
-  return;
+  return 0;
 }

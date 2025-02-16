@@ -58,12 +58,17 @@ _start:
 	mov eax, [content]
 	mov [eax], ebx
 
+	mov eax, 0
+	push eax
 	jmp .quit
 .error:
 	;; print no such file
 	mov eax, SYS_WRITE
 	mov ebx, msg_nofile
 	int 0x80
+
+	mov eax, 1
+	push eax
 	jmp .silent_quit
 
 .quit:
@@ -77,6 +82,7 @@ _start:
 	mov eax, SYS_FREE
 	mov ebx, [filename]
 	int 0x80
+	pop eax
 
 	leave
 	ret

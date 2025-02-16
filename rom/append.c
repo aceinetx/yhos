@@ -1,13 +1,13 @@
 #include <yhos.h>
 
-void _start() {
+int _start() {
   char *filename = (char *)syscall(SYS_EXEARG);
   char *str = (char *)syscall(SYS_EXEARG);
 
   dword old_size = syscall(SYS_VFSQUERY, filename);
   if (old_size == -1) {
     syscall(SYS_WRITE, "No such file or directory\n");
-    return;
+    return 1;
   }
   dword new_size = old_size + strlen(str);
 
@@ -27,5 +27,5 @@ void _start() {
 
   syscall(SYS_FREE, filename);
   syscall(SYS_FREE, str);
-  return;
+  return 0;
 }
