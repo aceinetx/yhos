@@ -88,11 +88,23 @@ void nextarg() {
   arg_p++;
 }
 
+vgavec2 initial_pos;
+void fail(vgavec2 old_pos) {
+  set_cursor_pos(VGA_WIDTH - 4, initial_pos.y);
+  syscall(SYS_WRITE, "FAIL");
+  set_cursor_pos(old_pos.x, old_pos.y);
+}
+void fail_ex(vgavec2 old_pos, char *s) {
+  set_cursor_pos(VGA_WIDTH - strlen(s), initial_pos.y);
+  syscall(SYS_WRITE, s);
+  set_cursor_pos(old_pos.x, old_pos.y);
+}
+
 void shell() {
   default_arrow();
   for (;;) {
     syscall(SYS_WRITE, arrow);
-    vgavec2 initial_pos = get_cursor_pos();
+    initial_pos = get_cursor_pos();
     syscall(SYS_GETS, cmd, sizeof(cmd));
     default_arrow();
 
@@ -167,16 +179,20 @@ void shell() {
           syscall(SYS_WRITE, "Check failed: not a valid yhSE executable\n");
         } else {
           entry_t start = (entry_t)header->entry;
-          start();
+          int result = start();
+          if (result != 0) {
+            char b[32];
+            strncpy(b, "FAIL: ", sizeof(b));
+            dword len = strlen(b);
+            syscall(SYS_ITOA, result, b + len, sizeof(b) - len);
+            fail_ex(get_cursor_pos(), b);
+          }
         }
       }
     } else {
       if (cmd[0] != '\0') {
         syscall(SYS_WRITE, "(no match)\n");
-        vgavec2 old_pos = get_cursor_pos();
-        set_cursor_pos(VGA_WIDTH - 4, initial_pos.y);
-        syscall(SYS_WRITE, "FAIL");
-        set_cursor_pos(old_pos.x, old_pos.y);
+        fail(get_cursor_pos());
       }
     }
   }

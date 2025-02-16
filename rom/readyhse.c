@@ -1,6 +1,6 @@
 #include <yhos.h>
 
-int _start() {
+_start() {
   char *filename = (char *)syscall(SYS_EXEARG);
 
   dword size = syscall(SYS_VFSQUERY, filename);

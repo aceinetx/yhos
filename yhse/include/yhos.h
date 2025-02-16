@@ -106,3 +106,10 @@ char *strncpy(char *s1, char *s2, dword n) {
     memset(s1 + size, '\0', n - size);
   return (char *)memcpy((void *)s1, (void *)s2, size);
 }
+
+#define _start int _start
+
+#ifdef __cplusplus
+#undef _start
+#define _start extern "C" int _start
+#endif

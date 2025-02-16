@@ -8,7 +8,9 @@
  * A linker script for yhSE toolchain
  * This linker script has support for
  * - GCC
+ * - G++
  * - FASM
+ * If you found a language linking properly, you should add it to this list via a PR at https://github.com/aceinetx/yhos
  */
 
 OUTPUT_FORMAT("binary")

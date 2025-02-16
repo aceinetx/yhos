@@ -17,7 +17,7 @@ public:
   }
 };
 
-extern "C" int _start() {
+_start() {
   print("Performing C++ test...\n");
   Cpptest cpptest(123);
   cpptest.test();

@@ -5,8 +5,6 @@
  */
 #pragma once
 
-// #include <stdint.h>
-
 #ifndef NULL
 #define NULL ((void *)0)
 #endif
@@ -15,14 +13,10 @@
 typedef enum { false = 0, true = 1, undef = 0xFFFFFFFF } bool;
 #endif
 
-/*
-typedef uint8_t byte;
-typedef uint16_t word;
-typedef uint32_t dword;*/
 typedef unsigned char byte;
 typedef unsigned short word;
 typedef unsigned int dword;
-typedef void (*entry_t)();
+typedef int (*entry_t)();
 
 typedef struct {
   dword edi;
