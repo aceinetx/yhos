@@ -162,8 +162,6 @@ void shell() {
       memcpy(VGA_BUFFER, (void *)0x140000,
              VGA_WIDTH * VGA_HEIGHT * sizeof(word));
       set_cursor_pos(0, 0);
-    } else if (strcmp(arg_buf, "x") == 0) {
-      syscall(SYS_VFSWRITE, ".vfstest1", "Hello there", 12);
     } else if (strcmp(arg_buf, "run") == 0) {
       nextarg();
       dword exe_size = syscall(SYS_VFSQUERY, arg_buf);

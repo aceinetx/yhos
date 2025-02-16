@@ -21,6 +21,7 @@ void set_rom(){
 """
 
 filename_i = 0
+total_bytes = 0
 for _filename in sys.argv[1::]:
     filename = os.path.basename(_filename)
     with open(_filename, "+rb") as f:
@@ -29,6 +30,7 @@ for _filename in sys.argv[1::]:
 
         for ch in f.read():
             cgen += hex(ch)+","
+            total_bytes += 1
 
         if cgen.endswith(","):
             cgen = cgen[:-1]
@@ -43,4 +45,5 @@ cgen += """}"""
 
 with open("rom.h", "+w") as f:
     f.write(cgen)
+print(f"[...] Total size of ROM: {round(total_bytes, 3)}B, {round(total_bytes/1024, 3)}kB, {round(total_bytes/1024/1024, 3)}mB")
 print(f"[...] ROM written to rom.h")

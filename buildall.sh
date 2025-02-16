@@ -8,16 +8,15 @@ set -e
 
 rm kernel/rom.h -f
 
-cd rom
 echo -e "Building \x1b[1mROM\x1b[0m"
 echo ++++++++++++
+cd rom
 ./makerom.sh
 cd ..
 echo ------------
 
 echo -e "Building \x1b[1myhOS\x1b[0m"
 echo +++++++++++++
-./makegen
 echo
-make
+./ymake
 echo -------------
