@@ -13,7 +13,8 @@ all: build/touch build/zero build/append build/readyhse
 
 build/append: build/append.o
 	$(dir_guard)
-	i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
+	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
+	$(LD) -o $@ $<
 
 build/append.o: append.c yhos.h
 	$(dir_guard)

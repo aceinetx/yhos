@@ -4,5 +4,6 @@
 ## Copyright (c) aceinet
 ## License: GPL-2.0
 ##
+echo "i386-yhse-ld: toolchain by aceinet for yhOS"
 dir=$(dirname -- "$0")
 i386-elf-ld $@ -T${dir}/yhse.ld --oformat=binary
