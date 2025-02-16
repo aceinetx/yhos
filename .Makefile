@@ -28,7 +28,6 @@ build/yhos.img: $(BINS) $(MAKEGEN_DEPS)
 	$(RESET_COLOR)
 	@cat build/boot.bin build/kernel.bin build/void.bin > build/yhos.bin
 	@cp build/yhos.bin build/yhos.img
-	@rm -rf build/*.o build/*.bin build/*.ll
 
 build/kernel_entry.o: kernel/kernel_entry.asm
 	$(dir_guard)
@@ -95,3 +94,6 @@ build/boot.bin: asm/boot.asm
 	$(ASM_COLOR)
 	$(NASM) $< -f bin -o $@
 	$(RESET_COLOR)
+
+clean:
+	rm -rf build rom/build kernel/rom.h

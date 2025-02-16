@@ -24,7 +24,7 @@ filename_i = 0
 for _filename in sys.argv[1::]:
     filename = os.path.basename(_filename)
     with open(_filename, "+rb") as f:
-        print(f"[...] processing {filename}")
+        print(f"[...] processing \x1b[38;5;2m{filename}\x1b[0m")
         cgen += f"unsigned char dat{filename_i}[] = "+"{"
 
         for ch in f.read():

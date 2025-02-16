@@ -31,7 +31,8 @@ build/readyhse.o: readyhse.c yhos.h
 
 build/touch: build/touch.o
 	$(dir_guard)
-	i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
+	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
+	$(LD) -o $@ $<
 
 build/touch.o: touch.s yhos.inc
 	$(dir_guard)
@@ -39,7 +40,8 @@ build/touch.o: touch.s yhos.inc
 
 build/zero: build/zero.o
 	$(dir_guard)
-	i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
+	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
+	$(LD) -o $@ $<
 
 build/zero.o: zero.s yhos.inc
 	$(dir_guard)
