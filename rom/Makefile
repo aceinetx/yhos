@@ -21,7 +21,8 @@ build/append.o: append.c yhos.h
 
 build/readyhse: build/readyhse.o
 	$(dir_guard)
-	i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
+	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
+	$(LD) -o $@ $<
 
 build/readyhse.o: readyhse.c yhos.h
 	$(dir_guard)

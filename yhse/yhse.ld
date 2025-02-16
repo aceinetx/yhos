@@ -16,40 +16,45 @@ ENTRY(_start)
 
 SECTIONS
 {
-  .header 0 : {
-    BYTE(89);
-    BYTE(72);
-    BYTE(83);
-    BYTE(69);
-    BYTE(0);
-    LONG(_start);
-  }
-  
-	. = 0x40000 + SIZEOF(.header);
+    /* Load address set to 0x40000 as per your OS's loader */
+    . = 0x40000;
 
-  .text : AT(LOADADDR(.header) + SIZEOF(.header)) {
-    *(.text)
-    *(.text.*)
-  }
+    /* Header section with magic and entry point */
+    .header : {
+        /* Magic identifier "YHSE\0" (5 bytes) */
+        BYTE(0x59); /* 'Y' */
+        BYTE(0x48); /* 'H' */
+        BYTE(0x53); /* 'S' */
+        BYTE(0x45); /* 'E' */
+        BYTE(0x00); /* Null terminator */
 
-  .flat : AT(LOADADDR(.header) + SIZEOF(.header) + 0x3) {
-    *(.flat)
-    *(.flat.*)
-  }
+        /* Entry point address (4 bytes) */
+        LONG(_start); /* _start's VMA will be after the header */
+    }
 
-  .rodata : {
-    *(.rodata)
-    *(.rodata.*)
-  }
+    /* Text section immediately follows the header in memory */
+    .text : SUBALIGN(1) { /* SUBALIGN(1) prevents padding */
+        *(.text .text.*)  /* Collect all .text sections */
+    }
 
-  .data : {
-    *(.data)
-    *(.data.*)
-  }
+    /* Other sections follow text with no gaps */
+    .rodata : SUBALIGN(1) {
+        *(.rodata .rodata.*)
+    }
 
-  .bss : {
-    *(COMMON)
-    *(.bss)
-    *(.bss.*)
-  }
+    .data : SUBALIGN(1) {
+        *(.data .data.*)
+    }
+
+    .bss : SUBALIGN(1) {
+        *(.bss .bss.*)
+        *(COMMON)       /* COMMON symbols for uninitialized globals */
+    }
+
+    /* Discard unnecessary sections to reduce binary size */
+    /DISCARD/ : {
+        *(.note.*)
+        *(.comment)
+        *(.eh_frame)    /* Omit exception handling frames if not needed */
+    }
 }
