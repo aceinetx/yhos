@@ -6,6 +6,18 @@
 
 include 'yhos.inc'
 
+usage:
+	push eax
+	push ebx
+
+	mov eax, SYS_WRITE
+	mov ebx, usage_msg
+	int 0x80
+
+	pop ebx
+	pop eax
+	ret
+
 public _start
 _start:
 	push ebp
@@ -17,6 +29,16 @@ _start:
 
 	mov [filename], eax
 
+	cmp byte [eax], 0
+	jne .arg_valid
+
+	call usage
+
+	mov eax, 1
+	push eax
+	jmp .silent_quit
+
+.arg_valid:
 	;; print zeroing out
 	mov eax, SYS_WRITE
 	mov ebx, msg_zeroing
@@ -87,6 +109,7 @@ _start:
 	leave
 	ret
 
+usage_msg: db "Usage: zero [filename]", 10, 0
 msg_zeroing: db "Zeroing out: ", 0
 msg_nofile: db "No such file or directory", 10, 0
 msg_done: db "Done", 10, 0

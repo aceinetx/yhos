@@ -6,6 +6,18 @@
 
 include 'yhos.inc'
 
+usage:
+	push eax
+	push ebx
+
+	mov eax, SYS_WRITE
+	mov ebx, usage_msg
+	int 0x80
+
+	pop ebx
+	pop eax
+	ret
+
 public _start
 _start:
 	push ebp
@@ -17,6 +29,16 @@ _start:
 
 	mov [filename], eax
 
+	cmp byte [eax], 0
+	jne .arg_valid
+
+	call usage
+
+	mov eax, 0
+	push eax
+	jmp .quit
+
+.arg_valid:
 	;; allocate empty buffer
 	mov eax, SYS_ALLOC
 	mov ebx, 1
@@ -37,15 +59,19 @@ _start:
 	mov ebx, [buf]
 	int 0x80
 
+	mov eax, 0
+	push eax
+.quit:
 	;; cleanup
 
 	mov eax, SYS_FREE
 	mov ebx, [filename]
 	int 0x80
 
-	mov eax, 0
+	pop eax
 	leave
 	ret
 
+usage_msg: db "Usage: touch [filename]", 10, 0
 filename: rd 1
 buf: rd 1

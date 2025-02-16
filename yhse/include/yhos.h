@@ -53,6 +53,8 @@ void print(char *buf) { syscall(SYS_WRITE, buf); }
 void print(const char *buf) { syscall(SYS_WRITE, buf); }
 #endif
 
+void printc(char c) { syscall(SYS_WRITEC, c); }
+
 int strcmp(char *p1, char *p2) {
   char *s1 = (char *)p1;
   char *s2 = (char *)p2;

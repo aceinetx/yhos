@@ -6,14 +6,36 @@
 #include <yhos.h>
 
 _start() {
+  dword ret = 0;
   char *filename = (char *)syscall(SYS_EXEARG);
+
+  if (filename[0] == 0) {
+    print("Usage: append [filename] [str]\n");
+    ret = 1;
+    goto cleanup_1;
+  }
+
   char *str = (char *)syscall(SYS_EXEARG);
+
+  if (str[0] == 0) {
+    print("Usage: append [filename] [str]\n");
+    ret = 1;
+    goto cleanup_2;
+  }
 
   dword old_size = syscall(SYS_VFSQUERY, filename);
   if (old_size == -1) {
-    syscall(SYS_WRITE, "No such file or directory\n");
-    return 1;
+    print("No such file or directory\n");
+    ret = 1;
+    goto cleanup_2;
   }
+
+  print("Appending \"");
+  print(str);
+  print("\" to ");
+  print(filename);
+  printc('\n');
+
   dword new_size = old_size + strlen(str);
 
   char *new_buf = (char *)syscall(SYS_ALLOC, new_size + 1);
@@ -24,13 +46,9 @@ _start() {
   syscall(SYS_VFSWRITE, filename, new_buf, new_size + 1);
   syscall(SYS_FREE, new_buf);
 
-  syscall(SYS_WRITE, "Appending \"");
-  syscall(SYS_WRITE, str);
-  syscall(SYS_WRITE, "\" to ");
-  syscall(SYS_WRITE, filename);
-  syscall(SYS_WRITEC, 10);
-
-  syscall(SYS_FREE, filename);
+cleanup_2:
   syscall(SYS_FREE, str);
-  return 0;
+cleanup_1:
+  syscall(SYS_FREE, filename);
+  return ret;
 }
