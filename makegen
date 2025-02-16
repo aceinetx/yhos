@@ -109,13 +109,13 @@ if [ "$dcc_found" == "1" ]; then
 	echo "build/dc_test.o: build/dc_test.ll" >> Makefile
 	echo "	\$(dir_guard)" >> Makefile
 	echo "	\$(DCC_COLOR)" >> Makefile
-	echo "	llc build/dc_test.ll -o build/dc_test.o -march=x86 -filetype=obj" >> Makefile
+	echo "	\$(LLC) build/dc_test.ll -o build/dc_test.o -march=x86 -filetype=obj" >> Makefile
 	echo "	\$(RESET_COLOR)" >> Makefile
 	echo "" >> Makefile
 	echo "build/dc_test.ll: kernel/dc_test.dc" >> Makefile
 	echo "	\$(dir_guard)" >> Makefile
 	echo "	\$(DCC_COLOR)" >> Makefile
-	echo "	dcc kernel/dc_test.dc -i -o build/dc_test --nostdlib" >> Makefile
+	echo "	\$(DCC) kernel/dc_test.dc -i -o build/dc_test --nostdlib" >> Makefile
 	echo "	\$(RESET_COLOR)" >> Makefile
 fi
 
