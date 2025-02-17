@@ -107,7 +107,7 @@ def main():
 					symtab += f"\t\tBYTE(0x0);\n"
 					symtab += f"\t\tLONG({part[2]});\n"
 					symtab_size += 5
-		symtab += "\t}\n"
+	symtab += "\t}\n"
 
 	gen_linker_script()
 	with open(f"{script_path}/temp.ld", "+w") as f: f.write(linker_script)
