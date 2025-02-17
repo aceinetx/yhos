@@ -24,7 +24,8 @@ public:
 
 _start() {
   print("Performing C++ test...\n");
-  Cpptest cpptest(123);
-  cpptest.test();
+  Cpptest *cpptest = new Cpptest(123);
+  cpptest->test();
+  delete cpptest;
   return 0;
 }

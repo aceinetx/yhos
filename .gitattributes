@@ -1,1 +1,2 @@
 *.dc linguist-language=DC
+*.inc linguist-language=ASSEMBLY

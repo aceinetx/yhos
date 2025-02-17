@@ -1,0 +1,69 @@
+#!/usr/bin/python3
+import os, sys, subprocess
+from capstone import *
+
+header_size = 4*4+5
+
+def main():
+	script_path = os.path.dirname(__file__)
+
+	md = Cs(CS_ARCH_X86, CS_MODE_32)
+
+	md.syntax = CS_OPT_SYNTAX_ATT
+	binaries = []
+	for arg in sys.argv[1:]:
+		if arg == "-Mintel":
+			md.syntax = CS_OPT_SYNTAX_INTEL
+		else:
+			# assume it's the binary
+			binaries.append(arg)
+
+	for binary in binaries:
+		with open(binary, "+rb") as binary_file:
+			symtable = []
+			code = binary_file.read()
+
+			# parse the symbol table
+			load_addr = int.from_bytes(code[5:5+4], byteorder="little", signed=False)
+			symtab_addr = int.from_bytes(code[13:13+4], byteorder="little", signed=False)-load_addr
+			symtab_size = int.from_bytes(code[17:17+4], byteorder="little", signed=False)
+
+			offset = header_size
+			while code[offset] == 0:
+				offset += 1
+	
+			if symtab_addr != 0:
+				p = symtab_addr
+				i = 0
+				while p <= symtab_addr+symtab_size:
+					symtable.append(["", 0])
+					while p < symtab_addr+symtab_size and p < len(code):
+						if code[p] == 0:
+							p += 1
+							break
+
+						symtable[i][0] += chr(code[p])
+						p += 1
+
+					symtable[i][1] = int.from_bytes(code[p:p+4], byteorder="little", signed=False)
+
+					p += 4
+					i += 1
+
+				if symtable[-1][0] == "" or symtable[-1][1] == 0:
+					symtable.pop()
+			else:
+				print("(no symbols loaded)")
+
+			current_symbol = ["", 0]
+			for instruction in md.disasm(code[(offset):], load_addr+offset):
+				for symbol in symtable:
+					if symbol[1] == instruction.address:
+						if current_symbol[0] != "":
+							print(f"---------------- end of {current_symbol[0]}")
+						current_symbol = symbol
+				print(f"<{current_symbol[0]} + {hex(instruction.address - current_symbol[1])}> 0x{instruction.address:x}: {instruction.mnemonic} {instruction.op_str}")
+
+
+if __name__ == '__main__':
+	main()

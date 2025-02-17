@@ -10,7 +10,7 @@ LD = ../yhse/i386-yhse-ld
 CC = ../yhse/i386-yhse-gcc
 CPP = ../yhse/i386-yhse-g++
 
-all: build/touch build/zero build/append build/readyhse build/cpptest build/echo build/typing build/example build/seq
+all: build/touch build/zero build/append build/readyhse build/cpptest build/echo build/typing build/example build/seq build/calc
 
 build/example: build/example.o
 	$(dir_guard)
@@ -94,6 +94,15 @@ build/echo: build/echo.o
 	$(LD) -nosym -o $@ $<
 
 build/echo.o: echo.s yhos.inc
+	$(dir_guard)
+	fasm $< $@
+
+build/calc: build/calc.o
+	$(dir_guard)
+	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
+	$(LD) -nosym -o $@ $<
+
+build/calc.o: calc.s yhos.inc
 	$(dir_guard)
 	fasm $< $@
 
