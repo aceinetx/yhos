@@ -50,6 +50,25 @@ _start() {
     printc('\n');
   }
 
+  print("Symbol table address: ");
+
+  {
+    char h[16];
+    syscall(SYS_ITOA16, header->symtab_addr, h, sizeof(h));
+    print("0x");
+    print(h);
+    printc('\n');
+  }
+
+  print("Symbol table size: ");
+
+  {
+    char h[16];
+    syscall(SYS_ITOA, header->symtab_size, h, sizeof(h));
+    print(h);
+    print(" bytes\n");
+  }
+
   print("Executable size: ");
 
   {

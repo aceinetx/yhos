@@ -1,9 +1,10 @@
-#!/usr/bin/bash
-##
-## yhOS
-## Copyright (c) aceinet
-## License: GPL-2.0
-##
-echo -e "\x1b[1mi386-yhse-g++\x1b[0m: toolchain by aceinet for yhOS"
-dir=$(dirname -- "$0")
-i386-elf-g++ $@ -ffreestanding -m32 -nostdlib -m32 -I${dir}/include -I${dir}/..
+#!/usr/bin/python3
+import os, sys, subprocess
+
+def main():
+	script_path = os.path.dirname(__file__)
+
+	subprocess.run(["i386-elf-g++", *sys.argv[1:], "-ffreestanding", "-m32", f"-I{script_path}/include", f"-I{script_path}/.."])
+
+if __name__ == '__main__':
+	main()

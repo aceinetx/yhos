@@ -16,6 +16,7 @@ typedef enum { false = 0, true = 1, undef = 0xFFFFFFFF } bool;
 typedef unsigned char byte;
 typedef unsigned short word;
 typedef unsigned int dword;
+typedef long unsigned int size_t;
 typedef int (*entry_t)();
 
 typedef struct {
@@ -48,5 +49,7 @@ typedef struct {
   char ident[YHSE_IDENT];
   dword load_addr;
   dword entry;
+  dword symtab_addr;
+  dword symtab_size;
 } yhse_hdr;
 #pragma pack(pop)

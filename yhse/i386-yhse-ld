@@ -1,9 +1,117 @@
-#!/usr/bin/bash
-##
-## yhOS
-## Copyright (c) aceinet
-## License: GPL-2.0
-##
-echo -e "\x1b[1mi386-yhse-ld\x1b[0m: toolchain by aceinet for yhOS"
-dir=$(dirname -- "$0")
-i386-elf-ld $@ -T${dir}/yhse.ld --oformat=binary
+#!/usr/bin/python3
+import os, sys, subprocess
+
+loadaddr = 0x40000
+linker_script = """
+/*
+ * yhOS
+ * Copyright (c) aceinet
+ * License: GPL-2.0
+ */
+
+/*
+ * A linker script for yhSE toolchain
+ * This linker script has support for
+ * - GCC
+ * - G++
+ * - FASM
+ * If you found a language linking properly, you should add it to this list via a PR at https://github.com/aceinetx/yhos
+ */
+
+OUTPUT_FORMAT("binary")
+ENTRY(_start)
+
+yhse_load_addr = $LOADADDR$;
+SECTIONS
+{
+	. = yhse_load_addr;
+
+	.header : {
+		BYTE(0x59);
+		BYTE(0x48);
+		BYTE(0x53);
+		BYTE(0x45);
+		BYTE(0x00);
+
+		LONG(yhse_load_addr);
+		LONG(_start);
+		LONG(LOADADDR(.yhse_symtab));
+		LONG($SYMTAB_SIZE$);
+	}
+
+	.text : SUBALIGN(1) {
+		*(.text .text.*)
+	}
+
+	.rodata : SUBALIGN(1) {
+		*(.rodata .rodata.*)
+	}
+
+	.data : SUBALIGN(1) {
+		*(.data .data.*)
+	}
+
+	.bss : SUBALIGN(1) {
+		*(.bss .bss.*)
+		*(COMMON)
+	}
+
+$SYMTAB$
+
+$DISCARD$
+}
+"""
+
+discard = """
+	/DISCARD/ : {
+		*(.note.*)
+		*(.comment)
+		*(.eh_frame)
+	}
+"""
+
+symtab = """
+	.yhse_symtab : SUBALIGN(1) {
+"""
+symtab_size = 0
+
+def gen_linker_script():
+	global linker_script
+	linker_script = linker_script.replace("$LOADADDR$", hex(loadaddr))
+	linker_script = linker_script.replace("$SYMTAB$", symtab)
+	linker_script = linker_script.replace("$DISCARD$", discard)
+	linker_script = linker_script.replace("$SYMTAB_SIZE$", hex(symtab_size))
+
+def main():
+	global symtab, symtab_size
+	script_path = os.path.dirname(__file__)
+
+	# enumerate the symbols in script_path
+	# firstly find all the object files passed to the args
+	objs = []
+	for arg in sys.argv:
+		if arg.endswith(".o"):
+			objs.append(arg)
+
+	nm = subprocess.run(['i386-elf-nm', *objs], stdout=subprocess.PIPE)
+	# parse the output
+	for line in nm.stdout.decode().splitlines():
+		part = line.split(' ')
+		if len(part) == 3:
+			# Don't allow C++ symbols, oh well
+			if not part[2].startswith("_Z"):
+				for c in part[2]:
+					symtab += f"\t\tBYTE({hex(ord(c))}); /* {c} */\n"
+					symtab_size += 1
+				symtab += f"\t\tBYTE(0x0);\n"
+				symtab += f"\t\tLONG({part[2]});\n"
+				symtab_size += 5
+	symtab += "\t}\n"
+
+	gen_linker_script()
+	with open(f"{script_path}/temp.ld", "+w") as f: f.write(linker_script)
+
+	subprocess.run(["i386-elf-ld", *sys.argv[1:], f"-T{script_path}/temp.ld"])
+
+if __name__ == '__main__':
+	main()
