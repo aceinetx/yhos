@@ -32,7 +32,7 @@ SECTIONS
 		LONG(yhse_load_addr);
 		LONG(_start);
 		LONG(LOADADDR(.yhse_symtab));
-		LONG(0xb);
+		LONG(0x0);
 	}
 
 	.text : SUBALIGN(1) {
@@ -54,14 +54,6 @@ SECTIONS
 
 
 	.yhse_symtab : SUBALIGN(1) {
-		BYTE(0x5f); /* _ */
-		BYTE(0x73); /* s */
-		BYTE(0x74); /* t */
-		BYTE(0x61); /* a */
-		BYTE(0x72); /* r */
-		BYTE(0x74); /* t */
-		BYTE(0x0);
-		LONG(_start);
 	}
 
 

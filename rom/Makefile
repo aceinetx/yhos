@@ -15,7 +15,7 @@ all: build/touch build/zero build/append build/readyhse build/cpptest build/echo
 build/example: build/example.o
 	$(dir_guard)
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
-	$(LD) -o $@ $<
+	$(LD) -nosym -o $@ $<
 
 build/example.o: example.c
 	$(dir_guard)
@@ -25,7 +25,7 @@ build/example.o: example.c
 build/cpptest: build/cpptest.o
 	$(dir_guard)
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
-	$(LD) -o $@ $<
+	$(LD) -nosym -o $@ $<
 
 build/cpptest.o: cpptest.cpp
 	$(dir_guard)
@@ -35,7 +35,7 @@ build/cpptest.o: cpptest.cpp
 build/append: build/append.o
 	$(dir_guard)
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
-	$(LD) -o $@ $<
+	$(LD) -nosym -o $@ $<
 
 build/append.o: append.c
 	$(dir_guard)
@@ -45,7 +45,7 @@ build/append.o: append.c
 build/readyhse: build/readyhse.o
 	$(dir_guard)
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
-	$(LD) -o $@ $<
+	$(LD) -nosym -o $@ $<
 
 build/readyhse.o: readyhse.c
 	$(dir_guard)
@@ -55,7 +55,7 @@ build/readyhse.o: readyhse.c
 build/touch: build/touch.o
 	$(dir_guard)
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
-	$(LD) -o $@ $<
+	$(LD) -nosym -o $@ $<
 
 build/touch.o: touch.s yhos.inc
 	$(dir_guard)
@@ -64,7 +64,7 @@ build/touch.o: touch.s yhos.inc
 build/zero: build/zero.o
 	$(dir_guard)
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
-	$(LD) -o $@ $<
+	$(LD) -nosym -o $@ $<
 
 build/zero.o: zero.s yhos.inc
 	$(dir_guard)
@@ -73,7 +73,7 @@ build/zero.o: zero.s yhos.inc
 build/typing: build/typing.o
 	$(dir_guard)
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
-	$(LD) -o $@ $<
+	$(LD) -nosym -o $@ $<
 
 build/typing.o: typing.s yhos.inc
 	$(dir_guard)
@@ -82,7 +82,7 @@ build/typing.o: typing.s yhos.inc
 build/seq: build/seq.o
 	$(dir_guard)
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
-	$(LD) -o $@ $<
+	$(LD) -nosym -o $@ $<
 
 build/seq.o: seq.s yhos.inc
 	$(dir_guard)
@@ -91,7 +91,7 @@ build/seq.o: seq.s yhos.inc
 build/echo: build/echo.o
 	$(dir_guard)
 	# i386-elf-ld -o $@ -nostdlib -Ttext=$(text_start) --oformat=binary $<
-	$(LD) -o $@ $<
+	$(LD) -nosym -o $@ $<
 
 build/echo.o: echo.s yhos.inc
 	$(dir_guard)

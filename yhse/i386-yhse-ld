@@ -86,13 +86,22 @@ def main():
 	global symtab, symtab_size
 	script_path = os.path.dirname(__file__)
 
-	# enumerate the symbols in script_path
-	# firstly find all the object files passed to the args
+	# parse arguments
 	objs = []
-	for arg in sys.argv:
-		if arg.endswith(".o"):
+	nosym = False
+	new_args = []
+	for arg in sys.argv[1:]:
+		if arg == "-nosym":
+			nosym = True
+		elif arg.endswith(".o"):
 			objs.append(arg)
+			new_args.append(arg)
+		else:
+			new_args.append(arg)
 
+	if nosym: objs = []
+
+	# enumerate the symbols in script_path
 	if len(objs) > 0:
 		nm = subprocess.run(['i386-elf-nm', *objs], stdout=subprocess.PIPE)
 		# parse the output
@@ -112,7 +121,7 @@ def main():
 	gen_linker_script()
 	with open(f"{script_path}/temp.ld", "+w") as f: f.write(linker_script)
 
-	subprocess.run(["i386-elf-ld", *sys.argv[1:], f"-T{script_path}/temp.ld"])
+	subprocess.run(["i386-elf-ld", *new_args, f"-T{script_path}/temp.ld"])
 
 if __name__ == '__main__':
 	main()
