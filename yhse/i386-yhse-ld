@@ -93,20 +93,21 @@ def main():
 		if arg.endswith(".o"):
 			objs.append(arg)
 
-	nm = subprocess.run(['i386-elf-nm', *objs], stdout=subprocess.PIPE)
-	# parse the output
-	for line in nm.stdout.decode().splitlines():
-		part = line.split(' ')
-		if len(part) == 3:
-			# Don't allow C++ symbols, oh well
-			if not part[2].startswith("_Z"):
-				for c in part[2]:
-					symtab += f"\t\tBYTE({hex(ord(c))}); /* {c} */\n"
-					symtab_size += 1
-				symtab += f"\t\tBYTE(0x0);\n"
-				symtab += f"\t\tLONG({part[2]});\n"
-				symtab_size += 5
-	symtab += "\t}\n"
+	if len(objs) > 0:
+		nm = subprocess.run(['i386-elf-nm', *objs], stdout=subprocess.PIPE)
+		# parse the output
+		for line in nm.stdout.decode().splitlines():
+			part = line.split(' ')
+			if len(part) == 3:
+				# Don't allow C++ symbols, oh well
+				if not part[2].startswith("_Z"):
+					for c in part[2]:
+						symtab += f"\t\tBYTE({hex(ord(c))}); /* {c} */\n"
+						symtab_size += 1
+					symtab += f"\t\tBYTE(0x0);\n"
+					symtab += f"\t\tLONG({part[2]});\n"
+					symtab_size += 5
+		symtab += "\t}\n"
 
 	gen_linker_script()
 	with open(f"{script_path}/temp.ld", "+w") as f: f.write(linker_script)
