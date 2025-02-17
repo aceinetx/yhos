@@ -74,8 +74,17 @@ jobs:
         export PATH="$HOME/i386-elf/bin:$HOME/bin:$(pwd):$PATH"
 
         FORCE_DCC=1 ./buildall.sh
+
+        rm rom/build/*.o
+        tar -czvf rom.tar.gz rom/build/* rom/etc/*
       
-    - name: Upload artifact
+    - name: Upload artifact (rom)
+      uses: actions/upload-artifact@v4
+      with:
+        name: rom
+        path: rom.tar.gz
+      
+    - name: Upload artifact (yhos)
       uses: actions/upload-artifact@v4
       with:
         name: yhos
@@ -93,6 +102,11 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
+          name: rom
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
           name: yhos
 
       - name: Update Nightly Release
@@ -106,3 +120,4 @@ jobs:
             Automated nightly release for commit ${{ github.sha }}. This release contains all of the newest features.
           files: |
             ./yhos.img
+            ./rom.tar.gz
