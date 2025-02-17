@@ -196,13 +196,13 @@ void shell() {
         }
       }
     } else if (strcmp(arg_buf, "shutdown") == 0) {
-      syscall(SYS_WRITE, "Shutdown attempt #1");
+      syscall(SYS_WRITE, "Shutdown attempt #1\n");
       outw(0xB004, 0x2000);
-      syscall(SYS_WRITE, "Shutdown attempt #2");
+      syscall(SYS_WRITE, "Shutdown attempt #2\n");
       outw(0x604, 0x2000);
-      syscall(SYS_WRITE, "Shutdown attempt #3");
+      syscall(SYS_WRITE, "Shutdown attempt #3\n");
       outw(0x4004, 0x3400);
-      syscall(SYS_WRITE, "Shutdown attempt #4");
+      syscall(SYS_WRITE, "Shutdown attempt #4\n");
       outw(0x600, 0x34);
     } else {
       if (cmd[0] != '\0') {
