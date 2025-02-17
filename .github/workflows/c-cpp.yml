@@ -16,26 +16,33 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Cache i386-elf toolchain
-      id: toolchain-cache
-      uses: actions/cache@v3
-      with:
-        # Caches the directory where the toolchain is installed
-        path: ${{ runner.home }}/i386-elf
-        key: ${{ runner.os }}-i386-elf-toolchain-v2.37-gcc-11.2.0
-
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo libexpat-dev nasm llvm
         llc --version
 
-    - name: Download/build i386-elf toolchain and fasm
-      if: steps.toolchain-cache.outputs.cache-hit != 'true'
+    - name: Cache toolchain
+      id: cache-toolchain
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ env.TOOLCHAIN_PATH }}
+          ${{ env.BIN_PATH }}
+        key: ${{ runner.os }}-i386-elf-toolchain-v2.37-gcc-11.2.0
+        restore-keys: |
+          ${{ runner.os }}-i386-elf-toolchain-
+      env:
+        TOOLCHAIN_PATH: $HOME/i386-elf
+        BIN_PATH: $HOME/bin
+
+    - name: Prepare directories
       run: |
-        # Create installation directories
         mkdir -p $HOME/i386-elf $HOME/bin
 
+    - name: Build toolchain and fasm
+      if: steps.cache-toolchain.outputs.cache-hit != 'true'
+      run: |
         # Download sources for binutils and gcc
         wget -q https://ftp.gnu.org/gnu/binutils/binutils-2.37.tar.xz
         tar -xf binutils-2.37.tar.xz
@@ -62,8 +69,8 @@ jobs:
         cd fasm
         mv fasm $HOME/bin/
         cd ..
-
-    - name: Build yhos
+      
+    - name: Build ROM and YHOS
       run: |
         # Download DCC binary
         wget -q https://github.com/dc-lang/dc/releases/download/nightly-release/dcc-x86_64
@@ -73,8 +80,10 @@ jobs:
         # Update PATH to include our custom toolchain and fasm
         export PATH="$HOME/i386-elf/bin:$HOME/bin:$(pwd):$PATH"
 
+        # Build process
         FORCE_DCC=1 ./buildall.sh
 
+        # Package ROM
         rm rom/build/*.o
         tar -czvf rom.tar.gz rom/build/* rom/etc/*
       
@@ -99,12 +108,12 @@ jobs:
       - name: Authenticate GitHub CLI
         run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
 
-      - name: Download artifact
+      - name: Download artifact (rom)
         uses: actions/download-artifact@v4
         with:
           name: rom
 
-      - name: Download artifact
+      - name: Download artifact (yhos)
         uses: actions/download-artifact@v4
         with:
           name: yhos
