@@ -177,8 +177,8 @@ void shell() {
         yhse_hdr *header = (yhse_hdr *)0x40000;
 
         syscall(SYS_VFSREAD, arg_buf, code, exe_size);
-        code = (void *)header->load_addr;
         header = (void *)header->load_addr;
+        code = (void *)header;
         syscall(SYS_VFSREAD, arg_buf, code, exe_size);
 
         if (strcmp((char *)header->ident, "YHSE\0") != 0) {

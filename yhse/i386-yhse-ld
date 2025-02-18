@@ -109,7 +109,7 @@ def main():
 			part = line.split(' ')
 			if len(part) == 3:
 				# Don't allow C++ symbols, oh well
-				if not part[2].startswith("_Z"):
+				if not part[2].startswith("_Z") and part[1] == "T":
 					for c in part[2]:
 						symtab += f"\t\tBYTE({hex(ord(c))}); /* {c} */\n"
 						symtab_size += 1

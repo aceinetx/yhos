@@ -88,6 +88,7 @@ void *yalloc(dword size) {
       free_list_head = best->next;
   }
 
+  // syscall(SYS_WRITE, "yalloc()\n");
   return (char *)best + sizeof(header_t);
 }
 
@@ -142,4 +143,5 @@ void yfree(void *ptr) {
   if (free_list_head)
     free_list_head->prev = block;
   free_list_head = block;
+  // syscall(SYS_WRITE, "yfree()\n");
 }

@@ -105,7 +105,6 @@ install:
 	mkdir -p ~/.local/i386-yhse/toolchain
 	mkdir -p ~/.local/i386-yhse/kernel
 	cp yhse/i386-yhse-* ~/.local/i386-yhse/toolchain
-	cp yhse/*.ld ~/.local/i386-yhse/toolchain
 	cp yhse/include ~/.local/i386-yhse/toolchain -r
 	cp kernel/types.h ~/.local/i386-yhse/kernel
 	@echo

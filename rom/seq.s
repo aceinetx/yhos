@@ -56,6 +56,10 @@ _start:
 	jmp .loop
 
 .quit:
+	mov eax, SYS_FREE
+	mov ebx, [num_s]
+	int 0x80
+
 	mov eax, 0
 	leave
 	ret

@@ -90,5 +90,6 @@ _start() {
 
 cleanup:
   syscall(SYS_FREE, filename);
+  syscall(SYS_FREE, buf);
   return ret;
 }
