@@ -164,7 +164,7 @@ void shell() {
         }
       }
     } else if (strcmp(arg_buf, "clear") == 0) {
-      memcpy(VGA_BUFFER, (void *)0x140000,
+      memcpy(VGA_BUFFER, (void *)ADDR_VGA_EMPTY,
              VGA_WIDTH * VGA_HEIGHT * sizeof(word));
       set_cursor_pos(0, 0);
     } else if (strcmp(arg_buf, "run") == 0) {
@@ -173,8 +173,8 @@ void shell() {
       if (exe_size == (dword)-1) {
         syscall(SYS_WRITE, "No such file or directory\n");
       } else {
-        void *code = (void *)0x40000;
-        yhse_hdr *header = (yhse_hdr *)0x40000;
+        void *code = (void *)ADDR_EXE_LOAD;
+        yhse_hdr *header = (yhse_hdr *)ADDR_EXE_LOAD;
 
         syscall(SYS_VFSREAD, arg_buf, code, exe_size);
         header = (void *)header->load_addr;

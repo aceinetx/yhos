@@ -1,0 +1,53 @@
+#!/usr/bin/python3
+import os, sys, subprocess
+
+header_size = 4*4+5
+
+def main():
+	script_path = os.path.dirname(__file__)
+
+	binaries = []
+	for arg in sys.argv[1:]:
+		# assume it's the binary
+		binaries.append(arg)
+
+	for binary in binaries:
+		with open(binary, "+rb") as binary_file:
+			symtable = []
+			code = binary_file.read()
+
+			# parse the symbol table
+			load_addr = int.from_bytes(code[5:5+4], byteorder="little", signed=False)
+			symtab_addr = int.from_bytes(code[13:13+4], byteorder="little", signed=False)-load_addr
+			symtab_size = int.from_bytes(code[17:17+4], byteorder="little", signed=False)
+	
+			if symtab_addr != 0:
+				p = symtab_addr
+				i = 0
+				while p <= symtab_addr+symtab_size:
+					symtable.append(["", 0])
+					while p < symtab_addr+symtab_size and p < len(code):
+						if code[p] == 0:
+							p += 1
+							break
+
+						symtable[i][0] += chr(code[p])
+						p += 1
+
+					symtable[i][1] = int.from_bytes(code[p:p+4], byteorder="little", signed=False)
+
+					p += 4
+					i += 1
+
+				if symtable[-1][0] == "" or symtable[-1][1] == 0:
+					symtable.pop()
+
+				for symbol in symtable:
+					addr = hex(symbol[1]).replace("0x", "")
+					addr = "0"*(8-len(addr)) + addr
+					print(f"{addr} {symbol[0]}")
+			else:
+				print("(no symbols loaded)")
+
+if __name__ == '__main__':
+	main()

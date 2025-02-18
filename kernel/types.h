@@ -9,6 +9,11 @@
 #define NULL ((void *)0)
 #endif
 
+#define ADDR_VGA_EMPTY 0x140000
+#define ADDR_YALLOC_START 0x200000
+#define ADDR_EXE_LOAD 0x40000
+#define ADDR_KERNEL_LOAD 0x1000
+
 #ifndef __cplusplus
 typedef enum { false = 0, true = 1, undef = 0xFFFFFFFF } bool;
 #endif

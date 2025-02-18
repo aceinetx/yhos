@@ -5,10 +5,8 @@
 ;;
 [org 0x7c00]                        
 KERNEL_LOCATION equ 0x1000
-                                    
 
 mov [BOOT_DISK], dl                 
-
                                     
 xor ax, ax                          
 mov es, ax
@@ -18,7 +16,6 @@ mov sp, bp
 
 mov bx, KERNEL_LOCATION
 mov dh, 50
-;mov dh, 2
 
 mov ah, 0x02
 mov al, dh 
@@ -26,7 +23,7 @@ mov ch, 0x00
 mov dh, 0x00
 mov cl, 0x02
 mov dl, [BOOT_DISK]
-int 0x13                ; no error management, do your homework!
+int 0x13
 
 
 ;; Switch to text mode
