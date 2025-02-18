@@ -12,12 +12,12 @@ GCC_COLOR = @echo -e -n "\x1b[38;5;244m"
 LD_COLOR = @echo -e -n "\x1b[38;5;103m"
 DCC_COLOR = @echo -e -n "\x1b[38;5;207m"
 RESET_COLOR = @echo -e -n "\x1b[0m"
-LD = i386-elf-ld
-CC = i386-elf-gcc
+LD = ld.lld -m elf_i386
+CC = clang -m32 --target=i386-elf
 NASM = nasm
 FASM = fasm
 DCC = dcc
-LLC = llc
+LLC = llc -mtriple=i386-unknown-elf
 
 all: build/yhos.img
 

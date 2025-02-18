@@ -16,7 +16,7 @@ typedef enum { false = 0, true = 1, undef = 0xFFFFFFFF } bool;
 typedef unsigned char byte;
 typedef unsigned short word;
 typedef unsigned int dword;
-typedef long unsigned int size_t;
+typedef unsigned int size_t;
 typedef int (*entry_t)();
 
 typedef struct {

@@ -27,36 +27,36 @@ if [ "$dcc_found" == "1" ]; then
 	else
 		echo "none"
 		echo "error: cannot proceed without llc"
+		
 		exit 1
 	fi
 else
 	echo "none"
 fi
 
-echo -n "checking for i386-elf-gcc... "
-if i386-elf-gcc -v &> /dev/null; then
-	echo "i386-elf-gcc"
+echo -n "checking for clang... "
+if clang -v &> /dev/null; then
+	echo "clang"
 else
 	echo "none"
-	echo "error: cannot proceed without i386-elf-gcc"
+	echo "error: cannot proceed without clang"
 	exit 1
 fi
 
-echo -n "checking for i386-elf-g++... "
-if i386-elf-g++ -v &> /dev/null; then
-	echo "i386-elf-g++"
+echo -n "checking for clang++... "
+if clang++ -v &> /dev/null; then
+	echo "clang++"
 else
 	echo "none"
-	echo "warning: you can proceed without i386-elf-g++, but you probably wouldn't be able to compile the ROM"
-	exit 1
+	echo "warning: you can proceed without clang++, but you probably wouldn't be able to compile the ROM"
 fi
 
-echo -n "checking for i386-elf-ld... "
+echo -n "checking for ld.lld... "
 if i386-elf-ld -v &> /dev/null; then
-	echo "i386-elf-ld"
+	echo "ld.lld"
 else
 	echo "none"
-	echo "error: cannot proceed without i386-elf-ld"
+	echo "error: cannot proceed without ld.lld"
 	exit 1
 fi
 

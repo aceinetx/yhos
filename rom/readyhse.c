@@ -4,7 +4,7 @@ _start() {
   dword ret = 0;
   char *filename = (char *)syscall(SYS_EXEARG);
 
-  if (filename[0] == 0) {
+  if (*filename == 0) {
     print("Usage: readyhse [filename]\n");
     ret = 1;
     goto cleanup;

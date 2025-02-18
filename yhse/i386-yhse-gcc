@@ -4,7 +4,7 @@ import os, sys, subprocess
 def main():
 	script_path = os.path.dirname(__file__)
 
-	subprocess.run(["i386-elf-gcc", *sys.argv[1:], "-ffreestanding", "-m32", f"-I{script_path}/include", f"-I{script_path}/.."])
+	subprocess.run(["clang", *sys.argv[1:], "-ffreestanding", "-m32", f"-I{script_path}/include", f"-I{script_path}/..", "--target=i386-elf"])
 
 if __name__ == '__main__':
 	main()

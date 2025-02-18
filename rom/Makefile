@@ -5,7 +5,7 @@
 ##
 dir_guard = @mkdir -p build
 text_start = 0x40000
-CFLAGS = -I.. -Wall -Werror -I../yhse/include
+CFLAGS = -I.. -Wall -Werror -I../yhse/include -Wno-sometimes-uninitialized -Wno-implicit-exception-spec-mismatch
 LDFLAGS =
 LD = ../yhse/i386-yhse-ld
 CC = ../yhse/i386-yhse-gcc
