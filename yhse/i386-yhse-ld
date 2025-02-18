@@ -103,7 +103,7 @@ def main():
 
 	# enumerate the symbols in script_path
 	if len(objs) > 0:
-		nm = subprocess.run(['i386-elf-nm', *objs], stdout=subprocess.PIPE)
+		nm = subprocess.run(['llvm-nm', *objs], stdout=subprocess.PIPE)
 		# parse the output
 		for line in nm.stdout.decode().splitlines():
 			part = line.split(' ')
@@ -121,7 +121,7 @@ def main():
 	gen_linker_script()
 	with open(f"{script_path}/temp.ld", "+w") as f: f.write(linker_script)
 
-	subprocess.run(["i386-elf-ld", *new_args, f"-T{script_path}/temp.ld"])
+	subprocess.run(["ld.lld", *new_args, f"-T{script_path}/temp.ld", "-melf_i386"])
 
 if __name__ == '__main__':
 	main()
