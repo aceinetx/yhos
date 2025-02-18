@@ -52,7 +52,7 @@ else
 fi
 
 echo -n "checking for ld.lld... "
-if i386-elf-ld -v &> /dev/null; then
+if ld.lld -v &> /dev/null; then
 	echo "ld.lld"
 else
 	echo "none"
