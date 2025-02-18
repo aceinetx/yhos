@@ -10,7 +10,7 @@ echo "generating makefile"
 dcc_found="0"
 
 echo -n "checking for dcc... "
-if which dcc >/dev/null; then
+if type dcc &> /dev/null; then
 	dcc_found="1"
 fi
 
@@ -35,7 +35,7 @@ else
 fi
 
 echo -n "checking for clang... "
-if clang -v &> /dev/null; then
+if type clang &> /dev/null; then
 	echo "clang"
 else
 	echo "none"
@@ -44,7 +44,7 @@ else
 fi
 
 echo -n "checking for clang++... "
-if clang++ -v &> /dev/null; then
+if type clang++ &> /dev/null; then
 	echo "clang++"
 else
 	echo "none"
@@ -52,7 +52,7 @@ else
 fi
 
 echo -n "checking for ld.lld... "
-if ld.lld -v &> /dev/null; then
+if type ld.lld &> /dev/null; then
 	echo "ld.lld"
 else
 	echo "none"
@@ -61,7 +61,7 @@ else
 fi
 
 echo -n "checking for nasm... "
-if nasm -v &> /dev/null; then
+if type nasm &> /dev/null; then
 	echo "nasm"
 else
 	echo "none"
