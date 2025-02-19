@@ -18,7 +18,6 @@ linker_script = """
  * If you found a language linking properly, you should add it to this list via a PR at https://github.com/aceinetx/yhos
  */
 
-OUTPUT_FORMAT("binary")
 ENTRY(_start)
 
 yhse_load_addr = $LOADADDR$;
@@ -121,7 +120,7 @@ def main():
 	gen_linker_script()
 	with open(f"{script_path}/temp.ld", "+w") as f: f.write(linker_script)
 
-	subprocess.run(["ld.lld", *new_args, f"-T{script_path}/temp.ld", "-melf_i386"])
+	subprocess.run(["ld.lld", *new_args, f"-T{script_path}/temp.ld", "-melf_i386", "--oformat=binary"])
 
 if __name__ == '__main__':
 	main()
