@@ -60,7 +60,7 @@ void *yalloc(dword size) {
     header_t *new_header = (header_t *)((char *)best + total_needed);
     new_header->size = remaining | 0;
     footer_t *new_footer =
-        (footer_t *)((char *)new_header + remaining - sizeof(footer_t));
+	(footer_t *)((char *)new_header + remaining - sizeof(footer_t));
     new_footer->size = remaining;
 
     free_block_t *new_block = (free_block_t *)new_header;
@@ -75,7 +75,7 @@ void *yalloc(dword size) {
 
     best->header.size = total_needed | 1;
     footer_t *best_footer =
-        (footer_t *)((char *)best + total_needed - sizeof(footer_t));
+	(footer_t *)((char *)best + total_needed - sizeof(footer_t));
     best_footer->size = best->header.size;
   } else {
     // Take entire block
@@ -117,16 +117,16 @@ void yfree(void *ptr) {
   footer_t *prev_footer = (footer_t *)((char *)header - sizeof(footer_t));
   if ((char *)prev_footer >= (char *)heap_start) {
     header_t *prev = (header_t *)((char *)prev_footer -
-                                  (prev_footer->size & ~1) + sizeof(footer_t));
+				  (prev_footer->size & ~1) + sizeof(footer_t));
     if (!(prev->size & 1)) {
       size += prev->size & ~1;
       free_block_t *prev_block = (free_block_t *)prev;
       if (prev_block->prev)
-        prev_block->prev->next = prev_block->next;
+	prev_block->prev->next = prev_block->next;
       if (prev_block->next)
-        prev_block->next->prev = prev_block->prev;
+	prev_block->next->prev = prev_block->prev;
       if (prev_block == free_list_head)
-        free_list_head = prev_block->next;
+	free_list_head = prev_block->next;
       header = prev;
     }
   }

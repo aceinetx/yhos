@@ -9,8 +9,8 @@
 #define NULL ((void *)0)
 #endif
 
-#define ADDR_VGA_EMPTY 0x140000
-#define ADDR_YALLOC_START 0x200000
+#define ADDR_VGA_EMPTY 0x20000
+#define ADDR_YALLOC_START 0x100000
 #define ADDR_EXE_LOAD 0x40000
 #define ADDR_KERNEL_LOAD 0x1000
 

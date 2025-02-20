@@ -118,8 +118,16 @@ char *strncpy(char *s1, char *s2, dword n) {
 #undef _start
 #define _start extern "C" int _start
 
-void *operator new(size_t size) { return (void *)syscall(SYS_ALLOC, size); }
-void *operator new[](size_t size) { return (void *)syscall(SYS_ALLOC, size); }
-void operator delete(void *p) { syscall(SYS_FREE, p); }
-void operator delete(void *p, unsigned int) { syscall(SYS_FREE, p); }
+void *operator new(size_t size) {
+  return (void *)syscall(SYS_ALLOC, size);
+}
+void *operator new[](size_t size) {
+  return (void *)syscall(SYS_ALLOC, size);
+}
+void operator delete(void *p) {
+  syscall(SYS_FREE, p);
+}
+void operator delete(void *p, unsigned int) {
+  syscall(SYS_FREE, p);
+}
 #endif

@@ -1,0 +1,10 @@
+BasedOnStyle: LLVM 
+IndentWidth: 2 
+UseTab: Always
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine : false
+SortIncludes: true
+BreakBeforeBraces : Attach

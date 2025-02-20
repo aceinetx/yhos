@@ -16,16 +16,16 @@ void dc_test();
 #endif
 
 char help_msg[] = "Available commands: \n"
-                  "exit     - halt the system\n"
-                  "reboot   - reboot the system\n"
-                  "help     - print this message\n"
-                  "ver      - print yhOS version\n"
-                  "test     - do a test\n"
-                  "ls       - list files in current working directory\n"
-                  "cat      - print contents of a file\n"
-                  "run      - run a executable\n"
-                  "clear    - clear the screen\n"
-                  "shutdown - shutdown the system\n";
+		  "exit     - halt the system\n"
+		  "reboot   - reboot the system\n"
+		  "help     - print this message\n"
+		  "ver      - print yhOS version\n"
+		  "test     - do a test\n"
+		  "ls       - list files in current working directory\n"
+		  "cat      - print contents of a file\n"
+		  "run      - run a executable\n"
+		  "clear    - clear the screen\n"
+		  "shutdown - shutdown the system\n";
 
 void kernel_test();
 
@@ -50,15 +50,15 @@ void ls() {
       bool slash = false;
       char *c = file->name;
       while (*c != 0) {
-        if (slash) {
-          if (*c == '.')
-            hidden = true;
-          slash = false;
-        }
+	if (slash) {
+	  if (*c == '.')
+	    hidden = true;
+	  slash = false;
+	}
 
-        if (*c == '/')
-          slash = true;
-        c++;
+	if (*c == '/')
+	  slash = true;
+	c++;
       }
     }
     if (hidden)
@@ -70,8 +70,8 @@ void ls() {
       memcpy(buf, file->name, buf_size - 1);
       buf[buf_size - 1] = 0;
       if (strcmp(buf, cwd) == 0) {
-        syscall(SYS_WRITE, file->name + buf_size - 1);
-        syscall(SYS_WRITE, "\n");
+	syscall(SYS_WRITE, file->name + buf_size - 1);
+	syscall(SYS_WRITE, "\n");
       }
     }
   }
@@ -122,14 +122,14 @@ void shell() {
     } else if (strcmp(arg_buf, "reboot") == 0) {
       byte good = 0x02;
       while (good & 0x02)
-        good = inb(0x64);
+	good = inb(0x64);
       outb(0x64, 0xFE);
       asm volatile("hlt\n");
     } else if (strcmp(arg_buf, "help") == 0) {
       syscall(SYS_WRITE, help_msg);
     } else if (strcmp(arg_buf, "ver") == 0) {
       syscall(SYS_WRITE,
-              YHOS_VER_FULL " (https://github.com/aceinetx/yhos)\n\0");
+	      YHOS_VER_FULL " (https://github.com/aceinetx/yhos)\n\0");
     } else if (strcmp(arg_buf, "test") == 0) {
       kernel_test();
 #if DCC_EXISTS
@@ -145,55 +145,55 @@ void shell() {
 
       dword buf_size = syscall(SYS_VFSQUERY, filename);
       if (buf_size == (dword)-1) {
-        syscall(SYS_WRITE, "No such file or directory\n");
+	syscall(SYS_WRITE, "No such file or directory\n");
       } else {
-        char *buf = yalloc(buf_size);
-        memset(buf, 0, buf_size);
+	char *buf = yalloc(buf_size);
+	memset(buf, 0, buf_size);
 
-        dword result;
-        result = syscall(SYS_VFSREAD, filename, buf, buf_size);
-        if (result == 0) {
-          syscall(SYS_WRITE, "No such file or directory\n");
-        } else {
-          if (strcmp(buf, "YHSE\0") != 0) {
-            syscall(SYS_WRITE, buf);
-            syscall(SYS_WRITE, "\n");
-          } else {
-            syscall(SYS_WRITE, "(executable file)\n");
-          }
-        }
+	dword result;
+	result = syscall(SYS_VFSREAD, filename, buf, buf_size);
+	if (result == 0) {
+	  syscall(SYS_WRITE, "No such file or directory\n");
+	} else {
+	  if (strcmp(buf, "YHSE\0") != 0) {
+	    syscall(SYS_WRITE, buf);
+	    syscall(SYS_WRITE, "\n");
+	  } else {
+	    syscall(SYS_WRITE, "(executable file)\n");
+	  }
+	}
       }
     } else if (strcmp(arg_buf, "clear") == 0) {
       memcpy(VGA_BUFFER, (void *)ADDR_VGA_EMPTY,
-             VGA_WIDTH * VGA_HEIGHT * sizeof(word));
+	     VGA_WIDTH * VGA_HEIGHT * sizeof(word));
       set_cursor_pos(0, 0);
     } else if (strcmp(arg_buf, "run") == 0) {
       nextarg();
       dword exe_size = syscall(SYS_VFSQUERY, arg_buf);
       if (exe_size == (dword)-1) {
-        syscall(SYS_WRITE, "No such file or directory\n");
+	syscall(SYS_WRITE, "No such file or directory\n");
       } else {
-        void *code = (void *)ADDR_EXE_LOAD;
-        yhse_hdr *header = (yhse_hdr *)ADDR_EXE_LOAD;
+	void *code = (void *)ADDR_EXE_LOAD;
+	yhse_hdr *header = (yhse_hdr *)ADDR_EXE_LOAD;
 
-        syscall(SYS_VFSREAD, arg_buf, code, exe_size);
-        header = (void *)header->load_addr;
-        code = (void *)header;
-        syscall(SYS_VFSREAD, arg_buf, code, exe_size);
+	syscall(SYS_VFSREAD, arg_buf, code, exe_size);
+	header = (void *)header->load_addr;
+	code = (void *)header;
+	syscall(SYS_VFSREAD, arg_buf, code, exe_size);
 
-        if (strcmp((char *)header->ident, "YHSE\0") != 0) {
-          syscall(SYS_WRITE, "Check failed: not a valid yhSE executable\n");
-        } else {
-          entry_t start = (entry_t)header->entry;
-          int result = start();
-          if (result != 0) {
-            char b[32];
-            strncpy(b, "FAIL: ", sizeof(b));
-            dword len = strlen(b);
-            syscall(SYS_ITOA, result, b + len, sizeof(b) - len);
-            fail_ex(get_cursor_pos(), b);
-          }
-        }
+	if (strcmp((char *)header->ident, "YHSE\0") != 0) {
+	  syscall(SYS_WRITE, "Check failed: not a valid yhSE executable\n");
+	} else {
+	  entry_t start = (entry_t)header->entry;
+	  int result = start();
+	  if (result != 0) {
+	    char b[32];
+	    strncpy(b, "FAIL: ", sizeof(b));
+	    dword len = strlen(b);
+	    syscall(SYS_ITOA, result, b + len, sizeof(b) - len);
+	    fail_ex(get_cursor_pos(), b);
+	  }
+	}
       }
     } else if (strcmp(arg_buf, "shutdown") == 0) {
       syscall(SYS_WRITE, "Shutdown attempt #1\n");
@@ -206,8 +206,8 @@ void shell() {
       outw(0x600, 0x34);
     } else {
       if (cmd[0] != '\0') {
-        syscall(SYS_WRITE, "(no match)\n");
-        fail(get_cursor_pos());
+	syscall(SYS_WRITE, "(no match)\n");
+	fail(get_cursor_pos());
       }
     }
   }

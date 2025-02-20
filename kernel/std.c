@@ -8,7 +8,8 @@
  * yhOS Standard library
  * This is made without any external dependencies, as it was made to be used
  * with assembly executables
- * (Some functions are copied from GNU libc with modifications to make them work)
+ * (Some functions are copied from GNU libc with modifications to make them
+ * work)
  */
 
 #include <kernel/std.h>
