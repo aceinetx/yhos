@@ -1,5 +1,5 @@
 # yhos
-DOS-like operating system for x86 legacy hardware. Here are it's features:
+DOS-like operating system for x86 legacy hardware. These are it's features:
 - Shell
 - System calls via int 0x80
 - Own executable format: yhSE (yhOS Static Executable, toolchain included)
