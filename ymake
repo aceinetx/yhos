@@ -5,6 +5,5 @@
 ## License: GPL-2.0
 ##
 set -e
-find . -iname '*.h*' -o -iname '*.c' | xargs clang-format -i
 ./makegen
 make $@

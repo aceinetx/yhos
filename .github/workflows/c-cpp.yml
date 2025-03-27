@@ -73,7 +73,7 @@ jobs:
         mv fasm $HOME/bin/
         cd ..
       
-    - name: Build ROM and YHOS
+    - name: Build ROM and yhOS
       run: |
         # Download DCC binary
         wget -q https://github.com/dc-lang/dc/releases/download/nightly-release/dcc-x86_64
