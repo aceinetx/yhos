@@ -6,7 +6,7 @@
 #pragma once
 
 #ifndef NULL
-#define NULL ((void *)0)
+#define NULL ((void*)0)
 #endif
 
 #define ADDR_VGA_EMPTY 0x20000
@@ -25,25 +25,25 @@ typedef unsigned int size_t;
 typedef int (*entry_t)();
 
 typedef struct {
-  dword edi;
-  dword esi;
-  dword ebp;
-  dword esp;
-  dword ebx;
-  dword edx;
-  dword ecx;
-  dword eax;
+	dword edi;
+	dword esi;
+	dword ebp;
+	dword esp;
+	dword ebx;
+	dword edx;
+	dword ecx;
+	dword eax;
 } regs;
 
 typedef struct {
-  dword size;
-  char *content;
-  char *name;
+	dword size;
+	char* content;
+	char* name;
 } vfs_file;
 
 typedef struct {
-  char x;
-  char y;
+	char x;
+	char y;
 } vgavec2;
 
 // yhSE header
@@ -51,10 +51,10 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-  char ident[YHSE_IDENT];
-  dword load_addr;
-  dword entry;
-  dword symtab_addr;
-  dword symtab_size;
+	char ident[YHSE_IDENT];
+	dword load_addr;
+	dword entry;
+	dword symtab_addr;
+	dword symtab_size;
 } yhse_hdr;
 #pragma pack(pop)

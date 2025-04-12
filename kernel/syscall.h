@@ -35,14 +35,12 @@
 #define syscall(...) vrg(syscall, __VA_ARGS__)
 #define syscall1(eax) do_syscall((dword)(eax), 0, 0, 0)
 #define syscall2(eax, ebx) do_syscall((dword)(eax), (dword)(ebx), 0, 0)
-#define syscall3(eax, ebx, ecx)                                                \
-  do_syscall((dword)(eax), (dword)(ebx), (dword)(ecx), 0)
-#define syscall4(eax, ebx, ecx, edx)                                           \
-  do_syscall((dword)(eax), (dword)(ebx), (dword)(ecx), (dword)(edx))
+#define syscall3(eax, ebx, ecx) do_syscall((dword)(eax), (dword)(ebx), (dword)(ecx), 0)
+#define syscall4(eax, ebx, ecx, edx) do_syscall((dword)(eax), (dword)(ebx), (dword)(ecx), (dword)(edx))
 
-extern vfs_file *vfs;
+extern vfs_file* vfs;
 extern dword vfs_size;
 extern char cwd[PATH_LIMIT];
 
 dword do_syscall(dword eax, dword ebx, dword ecx, dword edx);
-void syscall_handler(regs *r);
+void syscall_handler(regs* r);

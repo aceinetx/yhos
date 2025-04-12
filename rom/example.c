@@ -6,6 +6,6 @@
 #include <yhos.h>
 
 _start() {
-  print("Hello, World!\n");
-  return 0;
+	print("Hello, World!\n");
+	return 0;
 }

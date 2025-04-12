@@ -17,19 +17,19 @@
 #endif
 
 void main() {
-  memcpy((void *)ADDR_VGA_EMPTY, VGA_BUFFER,
-	 VGA_WIDTH * VGA_HEIGHT * sizeof(word)); // Save empty screen data
-  syscall(SYS_WRITE, "yhOS " YHOS_VER " - aceinetx (c) 2022-2025\n");
-  syscall(SYS_WRITE, "[...] git commit: " GIT_COMMIT "\n");
+	memcpy((void*)ADDR_VGA_EMPTY, VGA_BUFFER,
+				 VGA_WIDTH * VGA_HEIGHT * sizeof(word)); // Save empty screen data
+	syscall(SYS_WRITE, "yhOS " YHOS_VER " - aceinetx (c) 2022-2025\n");
+	syscall(SYS_WRITE, "[...] git commit: " GIT_COMMIT "\n");
 
-  syscall(SYS_WRITE, "[...] reset\n");
-  init_allocator((void *)ADDR_YALLOC_START, 0x10000); // Init memory allocator
-  vfs = NULL;					      // Reset VFS
-  strncpy(cwd, "/", PATH_LIMIT); // Set current working directory
+	syscall(SYS_WRITE, "[...] reset\n");
+	init_allocator((void*)ADDR_YALLOC_START, 0x10000); // Init memory allocator
+	vfs = NULL;																				 // Reset VFS
+	strncpy(cwd, "/", PATH_LIMIT);										 // Set current working directory
 
 #ifdef ROM_EXISTS
-  set_rom();
+	set_rom();
 #endif
 
-  shell();
+	shell();
 }

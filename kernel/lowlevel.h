@@ -5,7 +5,7 @@
  */
 #pragma once
 #include <kernel/types.h>
-#define VGA_BUFFER ((word *)0xB8000)
+#define VGA_BUFFER ((word*)0xB8000)
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 

@@ -7,25 +7,25 @@
 
 class Cpptest {
 public:
-  int x;
-  Cpptest(int x) {
-    print("Called Cpptest::Cpptest\n");
-    this->x = x;
-  }
+	int x;
+	Cpptest(int x) {
+		print("Called Cpptest::Cpptest\n");
+		this->x = x;
+	}
 
-  void test() {
-    print("Called Cpptest::test\n");
-    char buf[16];
-    syscall(SYS_ITOA, this->x, buf, sizeof(buf));
-    print((char *)buf);
-    syscall(SYS_WRITEC, '\n');
-  }
+	void test() {
+		print("Called Cpptest::test\n");
+		char buf[16];
+		syscall(SYS_ITOA, this->x, buf, sizeof(buf));
+		print((char*)buf);
+		syscall(SYS_WRITEC, '\n');
+	}
 };
 
 _start() {
-  print("Performing C++ test...\n");
-  Cpptest *cpptest = new Cpptest(123);
-  cpptest->test();
-  delete cpptest;
-  return 0;
+	print("Performing C++ test...\n");
+	Cpptest* cpptest = new Cpptest(123);
+	cpptest->test();
+	delete cpptest;
+	return 0;
 }

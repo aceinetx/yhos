@@ -12,11 +12,11 @@
 
 #ifndef YHSE_NOLIB
 dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
-  asm volatile("int $0x80" : : "a"(eax), "b"(ebx), "c"(ecx), "d"(edx));
-  asm volatile("push %eax\n");
-  dword ret;
-  asm volatile("pop %0\n" : "=a"(ret));
-  return ret;
+	asm volatile("int $0x80" : : "a"(eax), "b"(ebx), "c"(ecx), "d"(edx));
+	asm volatile("push %eax\n");
+	dword ret;
+	asm volatile("pop %0\n" : "=a"(ret));
+	return ret;
 }
 #endif
 
@@ -30,10 +30,8 @@ dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
 #define syscall(...) vrg(syscall, __VA_ARGS__)
 #define syscall1(eax) do_syscall((dword)(eax), 0, 0, 0)
 #define syscall2(eax, ebx) do_syscall((dword)(eax), (dword)(ebx), 0, 0)
-#define syscall3(eax, ebx, ecx)                                                \
-  do_syscall((dword)(eax), (dword)(ebx), (dword)(ecx), 0)
-#define syscall4(eax, ebx, ecx, edx)                                           \
-  do_syscall((dword)(eax), (dword)(ebx), (dword)(ecx), (dword)(edx))
+#define syscall3(eax, ebx, ecx) do_syscall((dword)(eax), (dword)(ebx), (dword)(ecx), 0)
+#define syscall4(eax, ebx, ecx, edx) do_syscall((dword)(eax), (dword)(ebx), (dword)(ecx), (dword)(edx))
 
 #define SYS_WRITEC 0
 #define SYS_WRITE 1
@@ -56,59 +54,59 @@ dword do_syscall(dword eax, dword ebx, dword ecx, dword edx) {
 #define printc(c) syscall(SYS_WRITEC, c)
 
 #ifndef YHSE_NOLIB
-int strcmp(char *p1, char *p2) {
-  char *s1 = (char *)p1;
-  char *s2 = (char *)p2;
-  char c1, c2;
+int strcmp(char* p1, char* p2) {
+	char* s1 = (char*)p1;
+	char* s2 = (char*)p2;
+	char c1, c2;
 
-  do {
-    c1 = (char)*s1++;
-    c2 = (char)*s2++;
-    if (c1 == '\0')
-      return c1 - c2;
-  } while (c1 == c2);
+	do {
+		c1 = (char)*s1++;
+		c2 = (char)*s2++;
+		if (c1 == '\0')
+			return c1 - c2;
+	} while (c1 == c2);
 
-  return c1 - c2;
+	return c1 - c2;
 }
 
-void *memcpy(void *dest, void *src, dword len) {
-  char *d = (char *)dest;
-  char *s = (char *)src;
-  while (len--)
-    *d++ = *s++;
-  return dest;
+void* memcpy(void* dest, void* src, dword len) {
+	char* d = (char*)dest;
+	char* s = (char*)src;
+	while (len--)
+		*d++ = *s++;
+	return dest;
 }
 
-void *memset(void *dest, dword val, dword len) {
-  char *ptr = (char *)dest;
-  while (len-- > 0)
-    *ptr++ = val;
-  return dest;
+void* memset(void* dest, dword val, dword len) {
+	char* ptr = (char*)dest;
+	while (len-- > 0)
+		*ptr++ = val;
+	return dest;
 }
 
-dword strnlen(char *s, dword maxlen) {
-  dword i;
+dword strnlen(char* s, dword maxlen) {
+	dword i;
 
-  for (i = 0; i < maxlen; ++i)
-    if (s[i] == '\0')
-      break;
-  return i;
+	for (i = 0; i < maxlen; ++i)
+		if (s[i] == '\0')
+			break;
+	return i;
 }
 
-dword strlen(char *s) {
-  dword i;
+dword strlen(char* s) {
+	dword i;
 
-  for (i = 0; 1; ++i)
-    if (s[i] == '\0')
-      break;
-  return i;
+	for (i = 0; 1; ++i)
+		if (s[i] == '\0')
+			break;
+	return i;
 }
 
-char *strncpy(char *s1, char *s2, dword n) {
-  dword size = strnlen(s2, n);
-  if (size != n)
-    memset(s1 + size, '\0', n - size);
-  return (char *)memcpy((void *)s1, (void *)s2, size);
+char* strncpy(char* s1, char* s2, dword n) {
+	dword size = strnlen(s2, n);
+	if (size != n)
+		memset(s1 + size, '\0', n - size);
+	return (char*)memcpy((void*)s1, (void*)s2, size);
 }
 #endif
 
@@ -118,16 +116,16 @@ char *strncpy(char *s1, char *s2, dword n) {
 #undef _start
 #define _start extern "C" int _start
 
-void *operator new(size_t size) {
-  return (void *)syscall(SYS_ALLOC, size);
+void* operator new(size_t size) {
+	return (void*)syscall(SYS_ALLOC, size);
 }
-void *operator new[](size_t size) {
-  return (void *)syscall(SYS_ALLOC, size);
+void* operator new[](size_t size) {
+	return (void*)syscall(SYS_ALLOC, size);
 }
-void operator delete(void *p) {
-  syscall(SYS_FREE, p);
+void operator delete(void* p) {
+	syscall(SYS_FREE, p);
 }
-void operator delete(void *p, unsigned int) {
-  syscall(SYS_FREE, p);
+void operator delete(void* p, unsigned int) {
+	syscall(SYS_FREE, p);
 }
 #endif
