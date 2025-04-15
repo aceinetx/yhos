@@ -6,7 +6,7 @@ DOS-like operating system for x86 legacy hardware. These are it's features:
 - Virtual file system stored in RAM
 - Dynamic memory allocator
 ## Build
-Requires i386-elf toolchain, nasm, fasm and dcc (if available). To install the toolchain use homebrew (Build can take 0.5-17 seconds depending on your machine)
+Requires clang, nasm, fasm and dcc (if available). To install the toolchain use homebrew (Build can take 0.5-17 seconds depending on your machine)
 ```
 ./make
 ```
