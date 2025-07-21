@@ -1,4 +1,7 @@
 # yhos
+## Unmaintained
+This project is no longer maintained because of it's issues that I can't fix on my own
+
 DOS-like operating system for x86 legacy hardware. These are it's features:
 - Shell
 - System calls via int 0x80
