@@ -14,7 +14,7 @@ typedef unsigned long uintptr_t;
 #define VGA_HEIGHT  25
 #define VGA_ADDRESS ((volatile uint16_t*)0xB8000)
 #define COLOR_WHITE 0x0F
-#define COLOR_RED   0x4F
+#define COLOR_RED   0x04
 
 static volatile uint16_t* vga_buffer = VGA_ADDRESS;
 static uint8_t cursor_row = 0;
@@ -204,7 +204,7 @@ static void print_stack_trace(void){
 
         vga_printf("Frame %d: 0x%x\n", i, ret_addr);
 
-        ebp = (uint32_t *)(*ebp);
+        ebp = (uint32_t *)(uint8_t)(*ebp);
     }
 }
 
